@@ -1,4 +1,5 @@
 var util = require('util');
+var path = require('path');
 var _ = require('underscore');
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
@@ -7,7 +8,6 @@ var express = require('./node_modules/nuby-express/node_modules/express');
 var ejs = require('./node_modules/nuby-express/node_modules/ejs');
 var ne_static = require('./node_modules/nuby-express/lib/ne_static');
 var ne = require('./node_modules/nuby-express');
-var path = require('path');
 
 var mongoose_init = require('./mongoose');
 
@@ -44,9 +44,7 @@ var fw_configs = {
         session_secret:session_secret,
         flash_keys:['info', 'error'],
         mongo_params: mongoose_init.params,
-        layout_id:'m5',
-        header: '<h1>Flowgraph</h1>',
-        footer: '<p>flowgraph</p>'
+        layout_id:'h5'
     },
 
     resources:{menu: require('./menu')},
@@ -58,26 +56,25 @@ var fw_configs = {
 
 var framework = new ne.Framework(fw_configs);
 
-var layout_path = path.resolve(__dirname, '..', 'layouts');
-console.log('layouts from %s', layout_path);
+function _after_load() {
 
-framework.add_layouts(layout_path, function () {
-    var loader = new ne.Loader();
-    // @TODO: put some timeout incase mongoose is not active.
-    function _after_load() {
-
-        function _on_mongoose_connected() {
-            console.log('loaded ... listening on %s', port);
-            app.listen(port);
-        }
-
-        framework.get_param({}, 'mongo_params', function (err, mongo_params) {
-            mongoose_init.connect(mongo_params, _on_mongoose_connected);
-
-        });
+    function _on_mongoose_connected() {
+        console.log('loaded ... listening on %s', port);
+        app.listen(port);
     }
 
-    loader.load(framework, _after_load, [__dirname + '/admin', __dirname + '/app']);
+    framework.get_param({}, 'mongo_params', function (err, mongo_params) {
+        mongoose_init.connect(mongo_params, _on_mongoose_connected);
+
+    });
+}
+
+var layout_path = path.resolve(__dirname, '..', 'layouts');
+console.log('layouts from %s', layout_path);
+framework.add_layouts(layout_path, function () {
+    var loader = new ne.Loader();
+
+    loader.load(framework, _after_load, [ __dirname + '/app', path.resolve(__dirname, '..', 'components/members')]);
 
 });
 

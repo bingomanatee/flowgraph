@@ -1,0 +1,16 @@
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="data_table">
+    <tr>
+        <% columns.forEach(function(column){%>
+        <th scope="col" class="ui-state-default"><%- column.label || '&nbsp;' %></th>
+        <% }) %>
+    </tr>
+    <tbody>
+    <% records.forEach(function(record){ %>
+    <tr>
+        <% columns.forEach(function(column) { %>
+        <td class="ui-widget-content<%- column.cell_class ? ' ' + column.cell_class : '' %>" <%- column.cell_style ? ' style="' + column.cell_style + '" ' : '' %>><%- record[column.out_key] %></td>
+        <% }) %>
+    </tr>
+    <% }) %>
+    </tbody>
+</table>

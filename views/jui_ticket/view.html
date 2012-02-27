@@ -1,0 +1,12 @@
+<% if (content != 'end'){ %>
+<div class="ui-widget">
+    <div class="ui-widget-header" style="text-align: center">
+        <%- title %>
+    </div>
+    <div class="ui-widget-content" style="<%- style ? style : 'padding: 1em' %>">
+<% } %>
+<%- (content == 'start') ? '' : (content == 'end') ? '': content %>
+<% if (content != 'start') { %>
+    </div>
+</div>
+<% } %>
