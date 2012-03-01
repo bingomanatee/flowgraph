@@ -1,3 +1,6 @@
 [submodule "node_modules/nuby-express"]
 	path = node_modules/nuby-express
 	url = git@github.com:bingomanatee/nuby-express.git
+[submodule "nuby-members"]
+	path = nuby-members
+	url = git@github.com:bingomanatee/nuby-members.git

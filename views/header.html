@@ -1,0 +1,12 @@
+<img src="/img/logo.png" style="float: left;"/> <h1 style="float: left">Flowgraph</h1>
+<br clear="all">
+<div>
+    <% if (member) { %>
+    <i>Signed in as <%= member.name %></i>
+    <a href="/signout">Sign Out</a> |
+    <a href="/flowgraphs/new">New Flowgraph</a> |
+    <a href="/flowgraphs">Flowgraphs</a>
+    <% } else { %>
+    <a href="/signin">Sign In</a> |
+    <% } %>
+</div>

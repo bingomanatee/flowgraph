@@ -1,0 +1,20 @@
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Label</th>
+        <th>&nbsp;</th>
+    </tr>
+    </thead>
+
+    <tbody>
+<% projects.forEach(function(p, i){ %>
+    <tr>
+        <td><%- p._id.toString() %></td>
+        <td><%- p.label %></td>
+        <td><a href="/flowgraph/<%- p._id.toString() %>">View</a></td>
+    </tr>
+<% }) %>
+    </tbody>
+
+</table>

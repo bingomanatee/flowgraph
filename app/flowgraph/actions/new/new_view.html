@@ -1,0 +1,19 @@
+<form id="new_project_form"  method="post" action="/flowgraph/0/new">
+    <table width="400" border="0" cellspacing="0" cellpadding="10">
+        <tr class="required">
+            <th scope="row"><label for="project[label]">Name</label></th>
+            <td><input name="project[label]" type="text" id="project.label" value="<%= project.hasOwnProperty('name') ? project.name : 'New Project' %>"/></td>
+            <td><% if (project.hasOwnProperty('name_error')){ %><i><%= project.name_error %></i><% } %></td>
+        </tr>
+        <tr class="required">
+            <th scope="row"><label for="project[notes]">Notes</label></th>
+            <td><textarea name="project[notes]" type="text" id="project.notes" value="<%= project.hasOwnProperty('notes') ? project.notes : '' %>"></textarea></td>
+            <td><% if (project.hasOwnProperty('note_error')){ %><i><%= project.email_error %></i><% } %></td>
+        </tr>
+        <tr>
+            <th scope="row">&nbsp;</th>
+            <td><input type="submit" name="submit" id="submit" value="Start Project"/></td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</form>

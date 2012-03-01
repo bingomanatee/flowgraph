@@ -1,0 +1,58 @@
+<h1>Project &quot;<%- project.label %>&quot; (<%- project._id.toString() %>)</h1>
+        
+ <p><%- project.notes %></p>
+
+<div id="infovis"></div>
+
+<!--[if IE]><script language="javascript" type="text/javascript" src="/js/jit/Extras/excanvas.js"></script><![endif]-->
+
+<!-- JIT Library File -->
+<script language="javascript" type="text/javascript" src="/js/jit/jit.js"></script>
+<!-- CSS Files -->
+<link type="text/css" href="/js/jit/Examples/css/base.css" rel="stylesheet" />
+<link type="text/css" href="/js/jit/Examples/css/ForceDirected.css" rel="stylesheet" />
+
+<script language="JavaScript" src="/js/jit/jit-yc.js" defer="defer">
+</script>
+
+    <script language="JavaScript" src="/js/flowgraph.js" defer="defer">
+ </script>
+        
+<form onsubmit="return add_node(this)">
+<table>
+    <tr>
+        <th>Name</th>
+        <td><input name="name" /></td>
+    </tr>
+    <tr><th>Link From</th>
+    <td><input type="text" name="link_from_id" id="link_from_id" /></td>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+        <td><input type="submit" value="New" /></td>
+    </tr>
+</table>
+
+
+</form>
+
+<form onsubmit="return link_nodes(this)">
+<table>
+    <tr>
+        <th>Name</th>
+        <td><input name="name" /></td>
+    </tr>
+    <tr><th>Link From</th>
+    <td><input type="text" name="link1" id="link1" /></td>
+    </tr>
+    <tr><th>Link To</th>
+    <td><input type="text" name="link1" id="link2" /></td>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+        <td><input type="submit" value="New" /></td>
+    </tr>
+</table>
+
+
+</form>

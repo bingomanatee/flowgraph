@@ -22,6 +22,7 @@ var app = express.createServer();
 //app.use(express.logger(...));
 app.use(express.bodyParser());
 app.use(express.cookieParser());
+app.set('flash', true);
 
 var MemoryStore = express.session.MemoryStore;
 var session_store = new MemoryStore();
@@ -30,7 +31,7 @@ app.use(session);
 app.set('session', session);
 app.set('session_store', session_store);
 
-app.set('view_engne', 'ejs');
+app.set('view_engine', 'ejs');
 app.register('.html', ejs);
 app.set('view options', {layout:true});
 app.set('views', __dirname + '/views');
@@ -51,6 +52,7 @@ var fw_configs = {
 
     app_root:__dirname,
     app:app,
+    ejs: ejs,
     _mongoose:null
 }
 
@@ -74,7 +76,7 @@ console.log('layouts from %s', layout_path);
 framework.add_layouts(layout_path, function () {
     var loader = new ne.Loader();
 
-    loader.load(framework, _after_load, [ __dirname + '/app', path.resolve(__dirname, '..', 'components/members')]);
+    loader.load(framework, _after_load, [ __dirname + '/app', __dirname + '/nuby-members']);
 
 });
 
