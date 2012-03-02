@@ -1,58 +1,177 @@
+<style>
+    #item_panel {
+        border: 1px solid rgb(102, 153, 204);
+        margin: 1em 0em;
+        padding: 1em;
+        background-color: rgb(225, 240, 255);
+        text-align: left;
+        width: 400px;
+    }
+
+    #item_panel .inner {
+        background-color: rgba(0, 0, 255, 0.03);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        clear: both;
+        padding: 0px;
+        margin: 0px;
+    }
+
+
+    #item_panel .item {
+        width: 100%;
+    }
+
+    #item_panel .item .content {
+        width: 120px;
+    }
+
+    #item_panel label {
+        width: 50px;
+        color: red;
+        font-weight: bold;
+    }
+
+    #item_panel h2 {
+        font-size: 120%;
+        color: rgb(102, 0, 51);
+        padding: 0px;
+        margin: 0px;
+    }
+
+    #selected_item {
+        width: 180px;
+        float: left;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    #connected_to {
+        width: 180px;
+        float: left;
+        clear: right;
+        padding: 0px;
+        margin: 0px;
+        margin-left: 1em;
+    }
+
+    #new_item_name {
+        width: 100px;
+        font-size: 80%;
+    }
+
+</style>
+
 <h1>Project &quot;<%- project.label %>&quot; (<%- project._id.toString() %>)</h1>
-        
- <p><%- project.notes %></p>
 
-<div id="infovis"></div>
+<p><%- project.notes %></p>
 
-<!--[if IE]><script language="javascript" type="text/javascript" src="/js/jit/Extras/excanvas.js"></script><![endif]-->
+<div id="infovis" style="background-color: white"></div>
+
+<!--[if IE]>
+<script language="javascript" type="text/javascript" src="/js/jit/Extras/excanvas.js"></script><![endif]-->
 
 <!-- JIT Library File -->
 <script language="javascript" type="text/javascript" src="/js/jit/jit.js"></script>
 <!-- CSS Files -->
-<link type="text/css" href="/js/jit/Examples/css/base.css" rel="stylesheet" />
-<link type="text/css" href="/js/jit/Examples/css/ForceDirected.css" rel="stylesheet" />
+<link type="text/css" href="/js/jit/Examples/css/base.css" rel="stylesheet"/>
+<link type="text/css" href="/js/jit/Examples/css/ForceDirected.css" rel="stylesheet"/>
 
 <script language="JavaScript" src="/js/jit/jit-yc.js" defer="defer">
 </script>
 
-    <script language="JavaScript" src="/js/flowgraph.js" defer="defer">
- </script>
-        
-<form onsubmit="return add_node(this)">
-<table>
-    <tr>
-        <th>Name</th>
-        <td><input name="name" /></td>
-    </tr>
-    <tr><th>Link From</th>
-    <td><input type="text" name="link_from_id" id="link_from_id" /></td>
-    </tr>
-    <tr>
-        <th>&nbsp;</th>
-        <td><input type="submit" value="New" /></td>
-    </tr>
-</table>
+<script language="JavaScript" src="/js/flowgraph.js" defer="defer">
+</script>
 
+<div id="item_panel">
+    <div id="selected_item">
+        <h2>Selected Item</h2>
 
-</form>
+        <div class="inner">
+            <div class="item">
+                <label>Name</label>
 
-<form onsubmit="return link_nodes(this)">
-<table>
-    <tr>
-        <th>Name</th>
-        <td><input name="name" /></td>
-    </tr>
-    <tr><th>Link From</th>
-    <td><input type="text" name="link1" id="link1" /></td>
-    </tr>
-    <tr><th>Link To</th>
-    <td><input type="text" name="link1" id="link2" /></td>
-    </tr>
-    <tr>
-        <th>&nbsp;</th>
-        <td><input type="submit" value="New" /></td>
-    </tr>
-</table>
+                <div id="selected_item_name"></div>
+            </div>
 
+            <div class="item">
+                <label>Type</label>
 
-</form>
+                <div id="selected_item_type"></div>
+            </div>
+        </div>
+        <div class="inner">
+            <div id="add_child_form" style="display: none">
+
+                <div class="item">
+                    <label>Name</label>
+                    <input type="text" id="new_item_name" onchange="update_display()" />
+                </div>
+                <div class="item">
+                    <label>Conn Name</label>
+                    <input type="text" id="new_conn_item_name" />
+                </div>
+
+                <div class="item">
+                    <label>Type</label>
+
+                    <select id="new_node_type">
+                        <option value="circle">Circle</option>
+                        <option value="square">Square</option>
+                    </select>
+                </div>
+
+                <div class="item">
+                    <label>Size</label>
+
+                    <select id="new_node_size">
+                        <option value="10">Small</option>
+                        <option value="20" selected="selected">Normal</option>
+                        <option value="30">Large</option>
+                    </select>
+                </div>
+
+                <div class="item">
+                    <label>Color</label>
+
+                    <select id="new_node_color">
+                        <option value="red">Red</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="blue">Blue</option>
+                    </select>
+                </div>
+
+                <button id="add_node_btn" style="display: none" onclick="add_node_child()">Add Child Node</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="connected_to">
+        <h2>Connections</h2>
+
+        <div class="inner" id="conn_list">
+
+        </div>
+        <div class="inner" id="last_item" style="display: none">
+            <button id="connect_to_btn" onclick="connect_nodes()">Connect to...</button>
+            <div class="item">
+                <label>Name</label>
+
+                <div id="last_item_name"></div>
+            </div>
+
+            <div class="item">
+                <label>Type</label>
+
+                <div id="last_item_type"></div>
+            </div>
+
+            <div class="item">
+                <label>Name</label>
+                <input type="text" id="connection_name" onchange="update_display()">
+            </div>
+
+        </div>
+        <br clear="all"/>
+    </div>
+    <br clear="all"/>
+</div>
