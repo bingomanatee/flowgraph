@@ -1,0 +1,230 @@
+<style>
+
+    #iv_container {
+        position: relative;
+        text-align: left;
+        width: 600px;
+    }
+
+    #infovis-canvaswidget {
+        text-align: left;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+    }
+
+    #item_panel {
+        border: 1px solid rgb(102, 153, 204);
+        margin: 1em 0em;
+        padding: 0.5em;
+        background-color: rgb(225, 240, 255);
+        text-align: left;
+        width: 600px;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        display: none;
+    }
+
+    #item_panel .inner {
+        background-color: rgba(0, 0, 255, 0.03);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        clear: both;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    #item_panel .item {
+        width: 100%;
+        margin: 4px 2px;
+    }
+
+    #item_panel .item .content {
+        display: inline-block;
+        width: 220px;
+    }
+
+    #item_panel label {
+        style: inline-block;
+        color: rgb(204, 51, 0);
+        font-weight: normal;
+        margin-right: 0.25em;
+    }
+
+    #item_panel h2 {
+        color: rgb(102, 0, 51);
+        font-size: 100%;
+        font-weight: normal;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    #selected_item {
+        width: 280px;
+        float: left;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    #connected_to {
+        width: 280px;
+        float: left;
+        clear: right;
+        padding: 0px;
+        margin: 0px;
+        margin-left: 1em;
+    }
+
+    #new_item_name {
+        width: 100px;
+        font-size: 80%;
+    }
+
+</style>
+
+<h1>Project &quot;<%- project.label %>&quot; (<%- project._id.toString() %>)</h1>
+
+<p><%- project.notes %></p>
+
+<div id="iv_container">
+    <div id="infovis" style="background-color: white; text-align: left;padding: 0px;"></div>
+
+    <div id="item_panel">
+        <div id="selected_item">
+            <h2>Selected Item</h2>
+
+            <div class="inner">
+                <div class="item">
+                    <label>Name</label>
+
+                    <input type="text" id="selected_item_name" class="content content_editable"
+                           onchange="update_display()"/>
+                </div>
+
+                <div class="item">
+                    <label>Type</label>
+
+                    <div id="selected_item_type" class="content"></div>
+                </div>
+                <button id="item_rename_button" onclick="rename_node()">Rename</button>
+            </div>
+
+            <span id="add_child_form_outer">
+            <button id="item_add_child" onclick="$(show_add_child_form(true))">Add Child</button>
+            <div class="inner" id="add_child_form" style="display: none">
+
+
+                <div class="item">
+                    <label>Name</label>
+                    <input type="text" id="new_item_name" class="content editable_content"
+                           onkeydown="update_display()"/>
+                </div>
+                <div class="item">
+                    <label>Conn Name</label>
+                    <input type="text" id="new_conn_item_name"/>
+                </div>
+
+                <div class="item">
+                    <label>Type</label>
+
+                    <select id="new_node_type">
+                        <option value="fancynode" selected="selected">Node</option>
+                        <option value="fancybranch" selected="selected">Branch</option>
+                    </select>
+                </div>
+
+                <div class="item">
+                    <label>Color</label>
+
+                    <select id="new_node_color">
+                        <option value="red">Red</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="blue">Blue</option>
+                    </select>
+                </div>
+
+                <button id="add_child_btn" style="display: none" onclick="add_node_child()">Add Child Node</button>
+
+            </div>
+            </span>
+
+            <span id="add_branch_choice_form_outer" style="display: none">
+            <button id="item_add_branch_choice" onclick="$(show_add_branch_choice_form(true))">Add Choice</button>
+            <div class="inner" id="add_branch_choice_form" style="display: none">
+
+                <div class="item">
+                    <label>Choice</label>
+                    <input type="text" id="new_branch_choice_name"
+                           class="content editable_content"
+                           onchange=""/>
+                </div>
+
+                <div class="item">
+                    <label>Condition</label><br clear="all"/>
+                    <textarea id="branch_choice_condition"
+                              class="content editable_content" style="height: 50px">
+
+
+                    </textarea>
+                </div>
+
+                <div class="item">
+                    <label>Result</label>
+                    <select id="branch_result_node">
+
+                    </select>
+                </div>
+
+                <button id="add_branch_choice_btn"
+                        style="display: none" onclick="add_branch_choice()">Add Choice
+                </button>
+
+            </div>
+            </span>
+        </div>
+
+        <div id="item_choices" style="display: none">
+            <h2>Choices</h2>
+
+            <div class="inner" id="item_choice_list">
+----
+            </div>
+            <button id="item_choices_button">Add Choice</button>
+            <br clear="all"/>
+        </div>
+
+        <div id="item_conns" style="display: none">
+            <h2>Connections</h2>
+
+            <div class="inner" id="item_conn_list">
+                ....
+            </div>
+            <br clear="all"/>
+        </div>
+        <br clear="all"/>
+    </div>
+</div><!-- iv container -->
+
+<!--[if IE]>
+<script language="javascript" type="text/javascript" src="/js/jit/Extras/excanvas.js" defer="defer"></script><![endif]-->
+
+<!-- JIT Library File -->
+<script language="JavaScript" src="/js/jit/jit_mod.js" defer="defer">
+</script>
+
+<!-- CSS Files -->
+<link type="text/css" href="/js/jit/Examples/css/base.css" rel="stylesheet"/>
+<link type="text/css" href="/js/jit/Examples/css/ForceDirected.css" rel="stylesheet"/>
+
+
+<script language="JavaScript" src="/js/flowgraph_json.js" defer="defer">
+</script>
+
+<script language="JavaScript" src="/js/flowgraph_interaction.js" defer="defer">
+</script>
+
+<script language="JavaScript" src="/js/flowgraph_nodetypes.js" defer="defer">
+</script>
+
+<script language="JavaScript" src="/js/flowgraph.js" defer="defer">
+</script>
