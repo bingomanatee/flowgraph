@@ -47,6 +47,8 @@ flowgraph.sprites.Item = function () {
         this.name = 'untitiled';
         this.new = true;
         this.id = item_id++;
+        this.selected = false;
+        this.moving = false;
 
         this.draw_props = {
             fill:'rgba(150, 150, 200, 0.75)',
@@ -55,6 +57,10 @@ flowgraph.sprites.Item = function () {
 
         this.new_draw_props = {
             fill:'rgba(255, 204, 0, 0.15)',
+            stroke:_dashed
+        };
+
+        this.moving_draw_props = {
             stroke:_dashed
         };
 
@@ -90,6 +96,8 @@ flowgraph.sprites.Item = function () {
                 _.extend(props, this.new_draw_props);
             } else if (this.selected) {
                 _.extend(props, this.selected_draw_props);
+            } else if (this.moving){
+            	_.extend(props, this.moving_draw_props);
             }
 
             ctx.save();

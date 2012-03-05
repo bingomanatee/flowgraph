@@ -6,15 +6,13 @@ flowgraph.init_events.push(function () {
 
     function _select_move() {
         var sprites = flowgraph.layers.get('drawing').items();
-        _selected_node_reset();
+        _deselect_node();
 
         sprites.forEach(function (sprite) {
             if (sprite.mouse_over()) {
-                _selected_node_reset();
+                _deselect_node();
                 selected_node = sprite;
                 selected_node.selected = true;
-            } else {
-                sprite.selected = false;
             }
         });
         return true;
@@ -37,47 +35,57 @@ flowgraph.init_events.push(function () {
         flowgraph.mouse.events._on_click = _select_click;
     }
 
-    function _selected_node_reset() {
+    function _deselect_node() {
         if (selected_node) {
             selected_node.selected = false;
         }
         selected_node = null;
     }
+    
+    function _selected_node_reset(){
+    	_deselect_node();
+    	flowgraph.mode = '';
+        flowgraph.mouse.events._on_move = null;
+        flowgraph.mouse.events._on_click = null;
+    }
 
     /* **************** MOVING NODE *************** */
+    
+    function _deselect_moving_node(){
+    	moving_node.moving = false;
+        moving_node = null;
+    }
 
     function _move_node_reset() {
-        flowgraph.mode = '';
+    	flowgraph.mode = '';
         console.log('resetting move node');
         flowgraph.mouse.events._on_move = flowgraph.mouse.events._on_click = false;
         flowgraph.layers.get('overlay').sprites.remove(new_node);
-        new_node = null;
+        if (moving_node){
+        	_deselect_moving_node();
+        }
     }
 
     var moving_node = null;
 
     function _move_node_click() {
         if (moving_node) {
-            moving_node = null;
-            _move_node_reset();
-        } else {
-
-            flowgraph.layers.get('drawing').items().forEach(function (item) {
-                if (item.mouse_over()) {
-                    moving_node = item;
-                }
-            });
-
+            _deselect_moving_node();
+        } else if (selected_node){
+        	moving_node = selected_node;
+        	_deselect_node();
+        	moving_node.moving = true;
         }
     }
 
     function _move_node_move() {
-        if (!moving_node) {
-            return;
+        if (moving_node) {
+        	moving_node.top = flowgraph.mouse.snap_top(50);
+        	moving_node.left = flowgraph.mouse.snap_left(50);
+        	return true;
+        } else {
+       		return _select_move();
         }
-        moving_node.top = flowgraph.mouse.snap_top(50);
-        moving_node.left = flowgraph.mouse.snap_left(50);
-        return true;
     }
 
     function _move_node() {
