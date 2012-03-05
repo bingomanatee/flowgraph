@@ -71,7 +71,7 @@ function _after_load() {
     });
 }
 
-var layout_path = path.resolve(__dirname, '..', 'layouts');
+var layout_path = path.resolve(__dirname,  'layout');
 console.log('layouts from %s', layout_path);
 framework.add_layouts(layout_path, function () {
     var loader = new ne.Loader();
