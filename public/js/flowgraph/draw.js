@@ -28,9 +28,12 @@ flowgraph.draw = function () {
                 var height = flowgraph.jcanvas.height();
 
                 draw.rect(flowgraph.ctx, [0, 0, width, height], {fill:'clear'});
-                flowgraph.layers.items().forEach(_layer_draw);
+                var items = flowgraph.layers.items();
+                items.forEach(_layer_draw);
 
-                //  _.sortBy(_.toArray(flowgraph.layers), _layer_index).forEach(_layer_draw);
+                var dl = flowgraph.layers.get('drawing');
+                var state = '<pre>' + dl.sprites.toString() + '</pre>';
+                $('#sprite_log').html(state);
             }
         },
 
@@ -45,24 +48,28 @@ flowgraph.draw = function () {
             return g;
         },
 
-        text: function(ctx, str, pt, props, no_state){
-            if (!no_state){
+        text:function (ctx, str, pt, props, no_state) {
+            if (!no_state) {
                 ctx.save();
             }
 
-            if (props.font){
+            if (props.fill){
+                ctx.fillStyle = props.fill;
+            }
+
+            if (props.font) {
                 ctx.font = props.font;
             }
-            if (props.align){
+            if (props.align) {
                 ctx.textAlign = props.align;
             }
-            if (props.base){
+            if (props.base) {
                 ctx.textBaseline = props.base;
             }
 
             ctx.fillText(str, pt[0], pt[1]);
 
-            if (!no_state){
+            if (!no_state) {
                 ctx.restore();
             }
         },
@@ -85,7 +92,7 @@ flowgraph.draw = function () {
                         break;
 
                     default:
-                     //  console.log('fill: ', props.fill);
+                        //  console.log('fill: ', props.fill);
                         ctx.fillStyle = props.fill;
                 }
 
@@ -121,6 +128,60 @@ flowgraph.draw = function () {
             if (!no_state) {
                 ctx.restore();
             }
+        },
+
+        paint:function (ctx, props, no_state) {
+
+            if (!no_state) {
+                ctx.save();
+            }
+
+            if (props.fill && (!props.stroke_first)) {
+
+                switch (props.fill) {
+                    case true:
+                        break;
+
+                    default:
+                        //  console.log('fill: ', props.fill);
+                        ctx.fillStyle = props.fill;
+                }
+
+                ctx.fill();
+            }
+
+            if (props.stroke) {
+                switch (props.stroke) {
+                    case true:
+
+                        break;
+
+                    default:
+                        if (_.isObject(props.stroke)) {
+                            if (props.stroke.hasOwnProperty('width')) {
+                                //  console.log('setting line width to ', props.stroke.width);
+                                ctx.lineWidth = props.stroke.width;
+                            }
+                            if (props.stroke.hasOwnProperty('style')) {
+                                //    console.log('setting line style to ', props.stroke.style);
+                                ctx.strokeStyle = props.stroke.style;
+                            }
+                        } else {
+                            ctx.strokeStyle = props.stroke;
+                        }
+                }
+                //    console.log('stroking rect ', dims);
+                ctx.stroke();
+            }
+
+            if (props.fill && props.stroke_first) {
+                flowgraph.draw.paint(ctx, {fill:props.fill}, true);
+            }
+
+            if (!no_state) {
+                ctx.restore();
+            }
+
         },
 
         init:function () {

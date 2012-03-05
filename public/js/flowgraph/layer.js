@@ -14,6 +14,14 @@ flowgraph.Layer = function () {
     }
 
     Layer.prototype = {
+        items: function (r){
+            return this.sprites.items(r);
+        },
+
+        get: function(item){
+            return this.sprites.get(item);
+        },
+
         draw:function (ctx) {
    //         console.log('drawing layer', this.name);
             this.sprites.items().forEach(function (sprite) {

@@ -3,7 +3,7 @@ var flowgraph = {
     width:800,
     height:600,
 
-    init_events: [],
+    init_events:[],
 
     rect:{width:40, height:20,
         fillStyle:'rgba(230, 240, 255, 1.0)',
@@ -21,6 +21,15 @@ var flowgraph = {
         links:[]
     },
 
+    get_layer_item:function (layer, name) {
+        var l = this.layers.get(layer);
+        if (!l){
+            return false;
+        } else {
+            return l.get(name);
+        }
+    },
+
     init:function (div_id) {
         flowgraph.canvas = document.getElementById(div_id);
         flowgraph.jcanvas = $('#' + div_id);
@@ -28,14 +37,21 @@ var flowgraph = {
         flowgraph.jcanvas.mousemove(flowgraph.mouse.events.move);
         flowgraph.jcanvas.click(flowgraph.mouse.events.click);
 
-
+        var drawing_layer = new flowgraph.Layer('drawing');
+        drawing_layer.sprites._on_add = function () {
+            drawing_layer.sprites.items().forEach(function (sprite, i) {
+                sprite.layer_index = i;
+            })
+        }
         flowgraph.layers = new flowgraph.Stack('layers');
         flowgraph.layers.add(new flowgraph.Layer('bg'), 30);
-        flowgraph.layers.add(new flowgraph.Layer('drawing'), 10);
+        flowgraph.layers.add(drawing_layer, 10);
         flowgraph.layers.add(new flowgraph.Layer('overlay'), 5);
         flowgraph.layers.add(new flowgraph.Layer('tools'), 0);
 
-        flowgraph.init_events.forEach(function(f){f()});
+        flowgraph.init_events.forEach(function (f) {
+            f()
+        });
 
         flowgraph.draw.init();
     }

@@ -57,6 +57,7 @@ flowgraph.sprites.Toolbar = function () {
                 stroke:{width:2, style:'rgb(204,51,0)'},
                 fill:'rgba(255, 102, 0, 0.2)'});
         },
+
         nohl:function (ctx) {
             flowgraph.draw.rect(ctx, this.dim(),
                 {
@@ -64,30 +65,13 @@ flowgraph.sprites.Toolbar = function () {
                 });
         },
 
-        _on_click:function () {
-        },
-
         mouse_over:function () {
             return flowgraph.mouse.in_rect(this.left, this.top, this.right, this.bottom);
         },
 
-        reset: function(){
-            if (this._on_reset){
+        reset:function () {
+            if (this._on_reset) {
                 this._on_reset();
-            }
-        },
-
-        mouse_click:function () {
-            if (this.mouse_over()) {
-                console.log('toolbar.tiles.mouse_click: resettting old tile');
-                if (this.toolbar.selected_tile) {
-                    console.log('... found');
-                    this.toolbar.selected_tile.reset();
-                }
-                this.toolbar.selected_tile = this;
-                return true;
-            } else {
-                return false;
             }
         }
 
@@ -142,8 +126,8 @@ flowgraph.sprites.Toolbar = function () {
         mouse_click:function () {
             for (var i = 0; i < this.tiles.length; ++i) {
                 var tile = this.tiles[i];
-                if (tile.mouse_click()) {
-                    tile._on_click();
+                if (tile.mouse_over()) {
+                    this.select_tool(tile);
                     return true;
                 }
             }
@@ -170,10 +154,30 @@ flowgraph.sprites.Toolbar = function () {
             if (tile) {
                 tile.hl(ctx);
             }
+        },
+
+        select_tool:function (tile) {
+            if (this.selected_tile && this.selected_tile.reset) {
+                this.selected_tile.reset();
+            }
+            if (_.isString(tile)){
+                this.tiles.forEach(function(t){
+                    if (t.name == tile){
+                        tile = t;
+                    }
+                })
+               if (_.isString(tile)){
+                   tile = null;
+               }
+            }
+            this.selected_tile = tile;
+            if (tile && tile.activate){
+                tile.activate();
+            }
         }
 
     }
 
     return Toolbar;
-}()
+} ()
 
