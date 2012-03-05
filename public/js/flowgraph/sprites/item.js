@@ -1,3 +1,23 @@
+var show_item_form_item;
+function show_item_form(item) {
+    var f = $('#item_form');
+    f.show();
+    f.css('top', item.top);
+    f.css('left', item.left);
+    $('#item_form_item_name').val(item.name);
+    $('#item_form_item_id').html(item.id);
+    show_item_form_item = item;
+}
+
+function update_show_item_form(){
+    var name = $('#item_form_item_name').val();
+    if (name){
+        show_item_form_item.name = name;
+    }
+    var f = $('#item_form');
+    f.hide();
+}
+
 flowgraph.sprites.Item = function () {
 
     var dashed_image = null;
@@ -16,6 +36,7 @@ flowgraph.sprites.Item = function () {
 
     var item_count = 0;
 
+    var item_id = 1;
     function Item(props) {
         this.top = 0;
         this.left = 0;
@@ -24,6 +45,7 @@ flowgraph.sprites.Item = function () {
         this.type = 'item';
         this.name = 'untitiled';
         this.new = true;
+        this.id = item_id++;
 
         this.draw_props = {
             fill:'rgba(150, 150, 200, 0.75)',
@@ -75,7 +97,7 @@ flowgraph.sprites.Item = function () {
             this.draw_label(ctx);
             this.draw_diamond(ctx);
             ctx.restore();
-           // this.draw_layer(ctx);
+            // this.draw_layer(ctx);
         },
 
         label_pt:[10, 20],
@@ -123,6 +145,22 @@ flowgraph.sprites.Item = function () {
             }
         },
 
+        diamond_dims:function (relative) {
+            var dims = [
+                this.width - this.diamond_offset - this.diamond_size, 0,
+                this.width, this.diamond_offset + this.diamond_size
+            ];
+
+            if (!relative) {
+                dims[0] += this.left;
+                dims[2] += this.left;
+                dims[1] += this.top;
+                dims[3] += this.top;
+            }
+
+            return dims;
+        },
+
         get_right:function () {
             return this.left + this.width;
         },
@@ -136,7 +174,15 @@ flowgraph.sprites.Item = function () {
         },
 
         mouse_click:function () {
-            return false;
+            if (this.mouse_over()) {
+                console.log('CLICKED ON ', this.name);
+                if (flowgraph.mouse.in_rect.apply(flowgraph.mouse, this.diamond_dims())) {
+                    show_item_form(this);
+                }
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 

@@ -5,7 +5,6 @@ flowgraph.draw = function () {
     }
 
     function _layer_draw(layer) {
-        //  console.log('drawing layer', layer.name);
         layer.draw(flowgraph.ctx);
     }
 

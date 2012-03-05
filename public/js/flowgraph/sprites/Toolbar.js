@@ -124,9 +124,11 @@ flowgraph.sprites.Toolbar = function () {
         },
 
         mouse_click:function () {
+            console.log('toolbar mouse click');
             for (var i = 0; i < this.tiles.length; ++i) {
                 var tile = this.tiles[i];
                 if (tile.mouse_over()) {
+                    console.log('tile clicked: ', tile.id);
                     this.select_tool(tile);
                     return true;
                 }
@@ -135,24 +137,18 @@ flowgraph.sprites.Toolbar = function () {
         },
 
         tile_draw:function (ctx) {
-            // @TODO: cache dims
-            var tile = false;
-            var offset = -1;
-            if (this.selected_tile) {
-                this.selected_tile.draw_selected(ctx);
-            } else {
-                this.tiles[0].draw_selected(ctx);
-            }
+
             this.tiles.forEach(function (t, i) {
-                t.nohl(ctx);
-                if ((!tile) && (t.mouse_over())) {
-                    tile = t;
-                    offset = i;
+
+                if (t.mouse_over()) {
+                    t.hl(ctx);
+                } else {
+                    t.nohl(ctx);
                 }
             });
 
-            if (tile) {
-                tile.hl(ctx);
+            if (this.selected_tile) {
+                this.selected_tile.draw_selected(ctx);
             }
         },
 
@@ -160,24 +156,36 @@ flowgraph.sprites.Toolbar = function () {
             if (this.selected_tile && this.selected_tile.reset) {
                 this.selected_tile.reset();
             }
-            if (_.isString(tile)){
-                this.tiles.forEach(function(t){
-                    if (t.name == tile){
+            this.selected_tile = null;
+            if (_.isString(tile)) {
+                for (var i = 0; i < this.tiles.length; ++i) {
+                    if (this.tiles[i].id == tile) {
+                        this.selected_tile = this.tiles[i];
+                    }
+                }
+                this.tiles.forEach(function (t) {
+            //        console.log('t id: ', t.id, ', tile: ', tile);
+                    if (t.id == tile) {
                         tile = t;
                     }
                 })
-               if (_.isString(tile)){
-                   tile = null;
-               }
+            } else {
+                this.selected_tile = tile;
             }
-            this.selected_tile = tile;
-            if (tile && tile.activate){
-                tile.activate();
+            if (this.selected_tile) {
+                console.log('--------- SELECTED TOOL: ', this.selected_tile.id, ' -----------');
+                this.selected_tile.selected = true;
+                if (this.selected_tile.activate) {
+                    this.selected_tile.activate();
+                }
+            } else {
+                console.log('--------- SELECTED TOOL: NONE -----------');
             }
+
         }
 
     }
 
     return Toolbar;
-} ()
+}()
 

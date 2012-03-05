@@ -21,12 +21,12 @@ var flowgraph = {
         links:[]
     },
 
-    get_layer_item:function (layer, name) {
+    get_layer_item:function (layer, id) {
         var l = this.layers.get(layer);
         if (!l){
             return false;
         } else {
-            return l.get(name);
+            return l.get(id);
         }
     },
 

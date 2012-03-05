@@ -1,80 +1,55 @@
-
-#iv_container {
-    position: relative;
-    text-align: left;
-    width: 600px;
-}
-
-#infovis-canvaswidget {
-    text-align: left;
-    position: absolute;
-    left: 0px;
-    top: 0px;
-}
-
-#item_panel {
-    border: 1px solid rgb(102, 153, 204);
-    margin: 1em 0em;
-    padding: 0.5em;
-    background-color: rgb(225, 240, 255);
-    text-align: left;
-    width: 600px;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    display: none;
-}
-
-#item_panel .inner {
-    background-color: rgba(0, 0, 255, 0.03);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+#canvas_frame{
+  /*  position: absolute; */
+    margin-bottom: 800px;
+    height: 800px;
+    border: 1px solid magenta;
     clear: both;
-    padding: 0px;
-    margin: 0px;
 }
 
-#item_panel .item {
-    width: 100%;
-    margin: 4px 2px;
+#canvas_inner {
+    position: absolute;
+}
+#sprite_log {
+    width: 600px; height: 300px; border: 1px solid black; overflow: scroll; position: absolute;
 }
 
-#item_panel .item .content {
-    display: inline-block;
-    width: 220px;
+
+
+/* ***************** EDIT FORM *********************** */
+
+.edit_form {
+    background-color: rgb(204, 204, 215);
+    border: 1px solid rgb(0, 25, 102);
+    padding: 1em;
+    width: 400px;
+    position: absolute;
 }
 
-#item_panel label {
-    style: inline-block;
-    color: rgb(204, 51, 0);
-    font-weight: normal;
-    margin-right: 0.25em;
-}
-
-#item_panel h2 {
-    color: rgb(102, 0, 51);
+.edit_form {
     font-size: 100%;
-    font-weight: normal;
-    padding: 0px;
-    margin: 0px;
+    text-align: center;
+    font-weight: bold;
+    color: black;
 }
 
-#selected_item {
-    width: 280px;
-    float: left;
+.edit_form .item {
+    margin-bottom: 3px;
     padding: 0px;
-    margin: 0px;
+    text-align: left;
 }
 
-#connected_to {
-    width: 280px;
-    float: left;
-    clear: right;
-    padding: 0px;
-    margin: 0px;
-    margin-left: 1em;
+.edit_form .item label {
+    display: inline-block;
+    font-weight: bold;
+    width: 80px;
+    text-align: right;
 }
 
-#new_item_name {
-    width: 100px;
-    font-size: 80%;
+.edit_form input[type="text"] {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    color: black;
+    padding: 3px;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 120%;
+    width: 300px;
 }

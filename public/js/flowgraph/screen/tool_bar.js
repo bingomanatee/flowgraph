@@ -2,33 +2,47 @@ flowgraph.init_events.push(function () {
 
     var selected_node;
 
-    function _select_node() {
-        flowgraph.mouse.events._on_move = function () {
-            var sprites = flowgraph.layers.get('drawing').items();
-            console.log('sprites: ', sprites.length);
+    function _select_move() {
+        var sprites = flowgraph.layers.get('drawing').items();
 
-            sprites.forEach(function (sprite) {
-                if (sprite.mouse_over()) {
-                    if (selected_node) {
-                        selected_node.selected = false;
-                    }
-                    console.log('mouse over ', sprite.name);
-                    selected_node = sprite;
-                    selected_node.selected = true;
-                } else {
-                    sprite.selected = false;
+        selected_node.selected = false;
+        selected_node = null;
+
+        sprites.forEach(function (sprite) {
+            if (sprite.mouse_over()) {
+                if (selected_node) {
+                    selected_node.selected = false;
+                    selected_node = null;
                 }
-            });
-            return true;
-        };
+                selected_node = sprite;
+                selected_node.selected = true;
+            } else {
+                sprite.selected = false;
+            }
+        });
+        return true;
+    }
 
-        flowgraph.mouse.events._on_click = function () {
+    function _select_click() {
+        if (selected_node) {
+            selected_node.mouse_click();
+            return false;
+        } else {
             return true;
         }
+
+    }
+
+    function _select_node() {
+        flowgraph.mouse.events._on_move = _select_move;
+
+        flowgraph.mouse.events._on_click = _select_click;
     }
 
     function _selected_node_reset() {
-        selected_node.selected = false;
+        if (selected_node) {
+            selected_node.selected = false;
+        }
         selected_node = null;
     }
 
@@ -41,7 +55,7 @@ flowgraph.init_events.push(function () {
         }
         flowgraph.mode = 'new_node';
 
-        new_node = new flowgraph.sprites.Item({name:'new node'});
+        new_node = new flowgraph.sprites.Item({});
 
         flowgraph.layers.get('overlay').sprites.add(new_node);
         flowgraph.mouse.events._on_move = function () {
@@ -63,7 +77,7 @@ flowgraph.init_events.push(function () {
         flowgraph.layers.get('drawing').sprites.add(new_node);
         new_node = null;
         var toolbar = flowgraph.get_layer_item('tools', 'toolbar');
-        toolbar.select_tool('Select');
+        toolbar.select_tool('select');
 
         console.log('new node set to null');
         return false;
@@ -81,16 +95,16 @@ flowgraph.init_events.push(function () {
         type:'toolbar',
         image:{src:'http://localhost:5103/img/toolbar.png'},
         tiles:[
-            {name:'New Node', activate:_new_node, reset:_new_node_reset},
-            {name:'New Text', activate:_select_node, reset:_selected_node_reset},
-            {name:'Move', activate:_select_node},
-            {name:'connect', activate:_select_node},
-            {name:'Erase', activate:_select_node},
-            {name:'Select', activate:_select_node}
+            {id:'new_node', name:'New Node', activate:_new_node, reset:_new_node_reset},
+            {id:'new_text', name:'New Text'},
+            {id:'movie', name:'Movie', activate:_select_node},
+            {id:'connect', name:'Connect', activate:_select_node},
+            {id:'erase', name:'Erase', activate:_select_node},
+            {id:'select', name:'Select', activate:_select_node, reset:_selected_node_reset}
         ],
         top:0,
         left:0,
-        name:'toolbar',
+        id:'toolbar',
         tile:{
             width:40,
             height:40,

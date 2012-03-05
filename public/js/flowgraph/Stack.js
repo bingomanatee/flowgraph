@@ -1,7 +1,7 @@
 flowgraph.Stack = function () {
 
-    function Stack(name) {
-        this.name = name;
+    function Stack(id) {
+        this.id = id;
         this.ordered = null;
         this.reversed = null;
         this.stack = [];
@@ -15,15 +15,15 @@ flowgraph.Stack = function () {
         return i.index * -1;
     }
 
-    function _name(i) {
-        return i.name;
+    function _id(i) {
+        return i.id;
     }
 
     function _order(stack) {
         var ostack = _.sortBy(stack.stack, _ordered);
         //      console.log('ordered stack: ', Stack.prototype.toString.call({stack: ostack}));
         stack.ordered = _.map(ostack, _item);
-        //    console.log('ordered stack names: ', _.map(stack.ordered, _name).join(','));
+        //    console.log('ordered stack ids: ', _.map(stack.ordered, _id).join(','));
     }
 
     function _item(i) {
@@ -35,7 +35,7 @@ flowgraph.Stack = function () {
             _order(stack);
         }
         stack.reversed = stack.ordered.reverse();
-        //       console.log('reversed stack names: ', _.map(stack.reversed, _name).join(','));
+        //       console.log('reversed stack ids: ', _.map(stack.reversed, _id).join(','));
     }
 
     Stack.prototype = {
@@ -43,7 +43,7 @@ flowgraph.Stack = function () {
         toString:function () {
             var out = [];
             this.stack.forEach(function (s) {
-                out.push('index: ' + s.index + ", name: " + s.item.name);
+                out.push('index: ' + s.index + ", id: " + s.item.id);
             });
 
             return out.join("\n");
@@ -53,8 +53,8 @@ flowgraph.Stack = function () {
             if (!item) {
                 throw new Error('Attempt to add nothing');
             }
-            if (!item.name) {
-                throw new Error('Attempt to add unnamed item');
+            if (!item.id) {
+                throw new Error('Attempt to add unidd item');
             }
             if (arguments.length < 2) {
                 index = -1;
@@ -70,9 +70,9 @@ flowgraph.Stack = function () {
             }
         },
 
-        get:function (name) {
+        get:function (id) {
             for (var i = 0; i < this.stack.length; ++i) {
-                if (this.stack[i].item.name == name) {
+                if (this.stack[i].item.id == id) {
                     return this.stack[i].item;
                 }
             }

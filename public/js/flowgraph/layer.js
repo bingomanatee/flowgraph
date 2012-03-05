@@ -8,9 +8,9 @@ flowgraph.Layer = function () {
         s.index = i;
     }
 
-    function Layer(name) {
-        this.name = name;
-        this.sprites = new flowgraph.Stack(this.name);
+    function Layer(id) {
+        this.id = id;
+        this.sprites = new flowgraph.Stack(this.id);
     }
 
     Layer.prototype = {
@@ -23,7 +23,6 @@ flowgraph.Layer = function () {
         },
 
         draw:function (ctx) {
-   //         console.log('drawing layer', this.name);
             this.sprites.items().forEach(function (sprite) {
                 sprite.draw(ctx);
             })
