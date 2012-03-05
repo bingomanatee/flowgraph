@@ -49,6 +49,17 @@ flowgraph.Stack = function () {
             return out.join("\n");
         },
 
+        min_index:function () {
+            if (!this.stack.length) {
+                return 0;
+            }
+            var min = this.stack[0].index;
+            this.stack.forEach(function (si) {
+                min = Math.min(si.index, min);
+            })
+            return min;
+        },
+
         add:function (item, index) {
             if (!item) {
                 throw new Error('Attempt to add nothing');
@@ -57,13 +68,9 @@ flowgraph.Stack = function () {
                 throw new Error('Attempt to add unidd item');
             }
             if (arguments.length < 2) {
-                index = -1;
+                index = this.min_index() - 1;
             }
             this.stack.push({item:item, index:index});
-
-            _.sortBy(this.stack, _item).forEach(function (item, i) {
-                item.index = i;
-            });
 
             if (this._on_add) {
                 this._on_add();

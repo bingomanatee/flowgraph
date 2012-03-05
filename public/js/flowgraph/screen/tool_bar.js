@@ -1,19 +1,16 @@
 flowgraph.init_events.push(function () {
 
+    /* ***************** SELECT NODE *********************** */
+
     var selected_node;
 
     function _select_move() {
         var sprites = flowgraph.layers.get('drawing').items();
-
-        selected_node.selected = false;
-        selected_node = null;
+        _selected_node_reset();
 
         sprites.forEach(function (sprite) {
             if (sprite.mouse_over()) {
-                if (selected_node) {
-                    selected_node.selected = false;
-                    selected_node = null;
-                }
+                _selected_node_reset();
                 selected_node = sprite;
                 selected_node.selected = true;
             } else {
@@ -34,8 +31,9 @@ flowgraph.init_events.push(function () {
     }
 
     function _select_node() {
-        flowgraph.mouse.events._on_move = _select_move;
+        flowgraph.mode = 'select';
 
+        flowgraph.mouse.events._on_move = _select_move;
         flowgraph.mouse.events._on_click = _select_click;
     }
 
@@ -46,7 +44,57 @@ flowgraph.init_events.push(function () {
         selected_node = null;
     }
 
+    /* **************** MOVING NODE *************** */
+
+    function _move_node_reset() {
+        flowgraph.mode = '';
+        console.log('resetting move node');
+        flowgraph.mouse.events._on_move = flowgraph.mouse.events._on_click = false;
+        flowgraph.layers.get('overlay').sprites.remove(new_node);
+        new_node = null;
+    }
+
+    var moving_node = null;
+
+    function _move_node_click() {
+        if (moving_node) {
+            moving_node = null;
+            _move_node_reset();
+        } else {
+
+            flowgraph.layers.get('drawing').items().forEach(function (item) {
+                if (item.mouse_over()) {
+                    moving_node = item;
+                }
+            });
+
+        }
+    }
+
+    function _move_node_move() {
+        if (!moving_node) {
+            return;
+        }
+        moving_node.top = flowgraph.mouse.snap_top(50);
+        moving_node.left = flowgraph.mouse.snap_left(50);
+        return true;
+    }
+
+    function _move_node() {
+        flowgraph.mode = 'move_node';
+        flowgraph.mouse.events._on_move = _move_node_move;
+        flowgraph.mouse.events._on_click = _move_node_click;
+    }
+
+    /* ************** NEW NODE **************** */
+
     var new_node;
+
+    function _new_node_move() {
+        new_node.top = flowgraph.mouse.snap_top(50);
+        new_node.left = flowgraph.mouse.snap_left(50);
+        return true;
+    }
 
     function _new_node() {
         if (new_node) {
@@ -56,13 +104,8 @@ flowgraph.init_events.push(function () {
         flowgraph.mode = 'new_node';
 
         new_node = new flowgraph.sprites.Item({});
-
         flowgraph.layers.get('overlay').sprites.add(new_node);
-        flowgraph.mouse.events._on_move = function () {
-            new_node.top = flowgraph.mouse.snap_top(50);
-            new_node.left = flowgraph.mouse.snap_left(50);
-            return true;
-        }
+        flowgraph.mouse.events._on_move = _new_node_move;
 
         flowgraph.mouse.events._on_click = _node_click;
     }
@@ -91,14 +134,31 @@ flowgraph.init_events.push(function () {
         new_node = null;
     }
 
+    /* ***************** CONNECT **************** */
+
+    var new_link = new flowgraph.sprites.Link();
+
+    function _link_node_click(){
+        return true;
+    }
+
+    function _link_node() {
+        flowgraph.mode = 'new_node';
+
+        flowgraph.mouse.events._on_move = null;
+        flowgraph.mouse.events._on_click = _link_node_click;
+    }
+
+    /* ***************** TOOLBAR **************** */
+
     var toolbar = new flowgraph.sprites.Toolbar({
         type:'toolbar',
         image:{src:'http://localhost:5103/img/toolbar.png'},
         tiles:[
             {id:'new_node', name:'New Node', activate:_new_node, reset:_new_node_reset},
             {id:'new_text', name:'New Text'},
-            {id:'movie', name:'Movie', activate:_select_node},
-            {id:'connect', name:'Connect', activate:_select_node},
+            {id:'movie', name:'Movie', activate:_move_node, reset:_move_node_reset},
+            {id:'connect', name:'Connect', activate:_link_node},
             {id:'erase', name:'Erase', activate:_select_node},
             {id:'select', name:'Select', activate:_select_node, reset:_selected_node_reset}
         ],

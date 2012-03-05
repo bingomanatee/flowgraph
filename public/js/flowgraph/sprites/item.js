@@ -9,9 +9,9 @@ function show_item_form(item) {
     show_item_form_item = item;
 }
 
-function update_show_item_form(){
+function update_show_item_form() {
     var name = $('#item_form_item_name').val();
-    if (name){
+    if (name) {
         show_item_form_item.name = name;
     }
     var f = $('#item_form');
@@ -37,11 +37,12 @@ flowgraph.sprites.Item = function () {
     var item_count = 0;
 
     var item_id = 1;
+
     function Item(props) {
         this.top = 0;
         this.left = 0;
-        this.width = 200;
-        this.height = 120;
+        this.width = 120;
+        this.height = 75;
         this.type = 'item';
         this.name = 'untitiled';
         this.new = true;
@@ -174,12 +175,17 @@ flowgraph.sprites.Item = function () {
         },
 
         mouse_click:function () {
-            if (this.mouse_over()) {
-                console.log('CLICKED ON ', this.name);
-                if (flowgraph.mouse.in_rect.apply(flowgraph.mouse, this.diamond_dims())) {
-                    show_item_form(this);
+            if (flowgraph.mode == 'select') {
+
+                if (this.mouse_over()) {
+                    console.log('CLICKED ON ', this.name);
+                    if (flowgraph.mouse.in_rect.apply(flowgraph.mouse, this.diamond_dims())) {
+                        show_item_form(this);
+                    }
+                    return false;
+                } else {
+                    return true;
                 }
-                return false;
             } else {
                 return true;
             }
