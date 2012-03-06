@@ -60,6 +60,17 @@ flowgraph.Stack = function () {
             return min;
         },
 
+        max_index:function () {
+            if (!this.stack.length) {
+                return 0;
+            }
+            var max = this.stack[0].index;
+            this.stack.forEach(function (si) {
+                max = Math.max(si.index, max);
+            })
+            return max;
+        },
+
         add:function (item, index) {
             if (!item) {
                 throw new Error('Attempt to add nothing');
@@ -68,7 +79,7 @@ flowgraph.Stack = function () {
                 throw new Error('Attempt to add unidd item');
             }
             if (arguments.length < 2) {
-                index = this.min_index() - 1;
+                index = this.max_index() + 1;
             }
             this.stack.push({item:item, index:index});
 

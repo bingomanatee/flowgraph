@@ -18,8 +18,8 @@ flowgraph.test = function(){
         test('stack items', function(){
             equal(this.stack.items().length, 3, 'three items in stack');
             equal(this.stack.items(true).length, 3, 'three items in reverse');
-            equal(this.stack.items()[0].id, 'gamma2', 'first item is gamma2');
-            equal(this.stack.items().pop().id, 'alha0', 'third item is alpha0');
+            equal(this.stack.items()[0].id, 'alpha0', 'first item is alpha0');
+            equal(this.stack.items().pop().id, 'gamma2', 'third item is gamma2');
         })
     }
 

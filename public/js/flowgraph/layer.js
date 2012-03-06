@@ -22,6 +22,8 @@ flowgraph.Layer = function () {
             return this.sprites.get(item);
         },
 
+        add: function(item){ this.sprites.add(item); },
+
         draw:function (ctx) {
             this.sprites.items().forEach(function (sprite) {
                 sprite.draw(ctx);

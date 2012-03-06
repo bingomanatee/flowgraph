@@ -14,6 +14,30 @@ flowgraph.draw = function () {
 
         screen_refresh:5,
 
+        line: function(ctx, path, props, no_state){
+            if(!no_state){
+                ctx.save();
+            }
+            console.log('line: ', path.join(', '));
+            ctx.beginPath();
+
+            ctx.moveTo.apply(ctx, path.slice(0, 2));
+            path = path.slice(2);
+            while(path.length){
+                ctx.lineTo.apply(ctx, path.slice(0, 2));
+                path = path.slice(2);
+            }
+
+            ctx.closePath();
+
+            this.apply_stroke(props.stroke);
+            ctx.stroke();
+
+            if(!no_state){
+                ctx.restore();
+            }
+        },
+
         point_in_rect:function (x, y, l, t, r, b) {
             return (x >= l) && (x <= r) && (y >= t) && (y <= b);
         },
@@ -52,8 +76,8 @@ flowgraph.draw = function () {
                 ctx.save();
             }
 
-            if (props.fill){
-                ctx.fillStyle = props.fill;
+            if (props.fill) {
+                draw.apply_fill(ctx, props.fill, props);
             }
 
             if (props.font) {
@@ -80,48 +104,24 @@ flowgraph.draw = function () {
             }
 
             if (props.fill && (!props.stroke_first)) {
-
-                switch (props.fill) {
-                    case true:
-                        break;
-
-                    case 'clear':
-                        ctx.clearRect.apply(ctx, dims);
-                        return;
-                        break;
-
-                    default:
-                        //  console.log('fill: ', props.fill);
-                        ctx.fillStyle = props.fill;
+                if (props.fill == 'clear'){
+                    ctx.clearRect.apply(ctx, dims);
+                } else {
+                    draw.apply_fill(ctx, props.fill, props);
+                    ctx.fillRect.apply(ctx, dims);
                 }
 
-                ctx.fillRect.apply(ctx, dims);
             }
 
             if (props.stroke) {
-                switch (props.stroke) {
-                    case true:
-
-                        break;
-
-                    default:
-                        if (_.isObject(props.stroke)) {
-                            if (props.stroke.hasOwnProperty('width')) {
-                                //  console.log('setting line width to ', props.stroke.width);
-                                ctx.lineWidth = props.stroke.width;
-                            }
-                            if (props.stroke.hasOwnProperty('style')) {
-                                //    console.log('setting line style to ', props.stroke.style);
-                                ctx.strokeStyle = props.stroke.style;
-                            }
-                        }
-                }
+                draw.apply_stroke(ctx, props.stroke, props);
                 //    console.log('stroking rect ', dims);
                 ctx.strokeRect.apply(ctx, dims);
             }
 
             if (props.fill && props.stroke_first) {
-                flowgraph.draw.rect(ctx, dims, {fill:props.fill}, true);
+                draw.apply_fill(ctx, props.fill, props);
+                ctx.fillRect.apply(ctx, dims);
             }
 
             if (!no_state) {
@@ -136,39 +136,13 @@ flowgraph.draw = function () {
             }
 
             if (props.fill && (!props.stroke_first)) {
-
-                switch (props.fill) {
-                    case true:
-                        break;
-
-                    default:
-                        //  console.log('fill: ', props.fill);
-                        ctx.fillStyle = props.fill;
-                }
+                draw.apply_fill(ctx, props.fill, props);
 
                 ctx.fill();
             }
 
             if (props.stroke) {
-                switch (props.stroke) {
-                    case true:
-
-                        break;
-
-                    default:
-                        if (_.isObject(props.stroke)) {
-                            if (props.stroke.hasOwnProperty('width')) {
-                                //  console.log('setting line width to ', props.stroke.width);
-                                ctx.lineWidth = props.stroke.width;
-                            }
-                            if (props.stroke.hasOwnProperty('style')) {
-                                //    console.log('setting line style to ', props.stroke.style);
-                                ctx.strokeStyle = props.stroke.style;
-                            }
-                        } else {
-                            ctx.strokeStyle = props.stroke;
-                        }
-                }
+                draw.apply_stroke(ctx, ctx.stroke, props);
                 //    console.log('stroking rect ', dims);
                 ctx.stroke();
             }
@@ -181,6 +155,45 @@ flowgraph.draw = function () {
                 ctx.restore();
             }
 
+        },
+
+        apply_fill:function (ctx, fill, props) {
+            switch (fill) {
+                case true:
+                    break;
+
+                default:
+                    if (_.isFunction(fill)) {
+                        ctx.fillStyle = fill(ctx, props);
+                    } else {
+                        ctx.fillStyle = fill;
+                    }
+                //  console.log('fill: ', props.fill);
+            }
+        },
+
+        apply_stroke:function (ctx, stroke, props) {
+            switch (stroke) {
+                case true:
+
+                    break;
+
+                default:
+                    if (_.isObject(stroke)) {
+                        if (stroke.hasOwnProperty('width')) {
+                            //  console.log('setting line width to ', stroke.width);
+                            ctx.lineWidth = stroke.width;
+                        }
+                        if (stroke.hasOwnProperty('style')) {
+                            //    console.log('setting line style to ', stroke.style);
+                            ctx.strokeStyle = stroke.style;
+                        }
+                    } else if (_.isFunction(stroke)) {
+                        ctx.strokeStyle = stroke(ctx, props);
+                    } else {
+                        ctx.strokeStyle = stroke;
+                    }
+            }
         },
 
         init:function () {

@@ -38,6 +38,16 @@ flowgraph.sprites.Item = function () {
 
     var item_id = 1;
 
+    function _selected_blend(ctx, props){
+        var stops = [{stop: 0, color: 'rgb(255, 204, 102)'},
+            {stop: 0.25, color: 'rgb(255, 102, 0)'},
+            {stop: 1, color: 'rgb(0, 0, 0)'}];
+
+        var coords = [50, 50, 2, 20, 20, 200];
+
+       return flowgraph.draw.grad(ctx, stops, coords, 'radial');
+    }
+
     function Item(props) {
         this.top = 0;
         this.left = 0;
@@ -47,11 +57,11 @@ flowgraph.sprites.Item = function () {
         this.name = 'untitiled';
         this.new = true;
         this.id = item_id++;
-        this.selected = false;
+        this.over = false;
         this.moving = false;
 
         this.draw_props = {
-            fill:'rgba(150, 150, 200, 0.75)',
+            fill:'rgb(150, 150, 200)',
             stroke:{style:'rgb(0, 0, 0)', width:2}
         };
 
@@ -64,7 +74,7 @@ flowgraph.sprites.Item = function () {
             stroke:_dashed
         };
 
-        this.selected_draw_props = {
+        this.over_draw_props = {
             stroke:{
                 width:'4px',
                 style:'rgb(204, 153, 0)'
@@ -77,12 +87,21 @@ flowgraph.sprites.Item = function () {
             base:'bottom'
         };
 
+        this.selected_draw_props = {
+            fill: _selected_blend
+        };
+
         _.extend(this, props);
 
         this.name = 'New Item ' + (++item_count);
     }
 
     Item.prototype = {
+
+        pa: function(){
+          return [this.left + this.width / 2, this.top + this.height /2]  ;
+        },
+
         draw:function (ctx) {
             var props = {};
 
@@ -94,11 +113,17 @@ flowgraph.sprites.Item = function () {
 
             if (this.new) {
                 _.extend(props, this.new_draw_props);
-            } else if (this.selected) {
+            }  else if (this.over) {
+                _.extend(props, this.over_draw_props);
+            }
+            if (this.selected){
                 _.extend(props, this.selected_draw_props);
-            } else if (this.moving){
+            }
+
+            if (this.moving){
             	_.extend(props, this.moving_draw_props);
             }
+
 
             ctx.save();
             ctx.translate(this.left, this.top);
@@ -197,6 +222,10 @@ flowgraph.sprites.Item = function () {
             } else {
                 return true;
             }
+        },
+
+        toString: function(){
+            return '(' + this.id + '): ' + this.name;
         }
     }
 

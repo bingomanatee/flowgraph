@@ -44,11 +44,11 @@ var flowgraph = {
             })
         }
         flowgraph.layers = new flowgraph.Stack('layers');
-        flowgraph.layers.add(new flowgraph.Layer('bg'), 30);
-        flowgraph.layers.add(new flowgraph.Layer('connections'), 20);
-        flowgraph.layers.add(drawing_layer, 10);
-        flowgraph.layers.add(new flowgraph.Layer('overlay'), 5);
-        flowgraph.layers.add(new flowgraph.Layer('tools'), 0);
+        flowgraph.layers.add(new flowgraph.Layer('tools'));
+        flowgraph.layers.add(new flowgraph.Layer('overlay'));
+        flowgraph.layers.add(new flowgraph.Layer('links'));
+        flowgraph.layers.add(new flowgraph.Layer('bg'));
+        flowgraph.layers.add(drawing_layer);
 
         flowgraph.init_events.forEach(function (f) {
             f()
