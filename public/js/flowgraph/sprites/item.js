@@ -6,6 +6,7 @@ function show_item_form(item) {
     f.css('left', item.left);
     $('#item_form_item_name').val(item.name);
     $('#item_form_item_id').html(item.id);
+    $('#item_form_strength').val(item.strength);
     show_item_form_item = item;
 }
 
@@ -14,6 +15,8 @@ function update_show_item_form() {
     if (name) {
         show_item_form_item.name = name;
     }
+    show_item_form_item.set_strength($('#item_form_strength').val());
+    
     var f = $('#item_form');
     f.hide();
 }
@@ -53,6 +56,7 @@ flowgraph.sprites.Item = function () {
         this.left = 0;
         this.width = 120;
         this.height = 75;
+        this.strength = 0;
 
         this.name = 'untitiled';
         this.new = true;
@@ -61,8 +65,11 @@ flowgraph.sprites.Item = function () {
         this.moving = false;
 
         this.draw_props = {
-            fill:'rgb(150, 150, 200)',
-            stroke:{style:'rgb(0, 0, 0)', width:2}
+            fill:'rgb(175, 175, 200)',
+            stroke:{
+            style:'rgb(0, 0, 0)', 
+            width:2
+            }
         };
 
         this.new_draw_props = {
@@ -105,7 +112,34 @@ flowgraph.sprites.Item = function () {
         pa: function(){
           return [this.left + this.width / 2, this.top + this.height /2]  ;
         },
-
+        
+        set_strength: function(v){
+        	v = parseInt(v);
+        	console.log('setting strength of', this.toString(), 'to', v);
+			if (v <= -10){
+				// optional;
+				this.strength = -10;
+				this.width=80;
+				this.height = 60;
+				this.draw_props.fill = 'rgb(225, 225, 255)';
+				this.draw_props.stroke.width = 1;
+			} else if (v < 10){
+				//standard
+				this.strength = 0;
+				this.width = 120;
+				this.height = 75;
+				this.draw_props.fill = 'rgb(175, 175, 200)';
+				this.draw_props.stroke.width = 2;
+			} else {
+				// critical path
+				this.strength = 10;
+				this.width = 150;
+				this.height = 90;
+				this.draw_props.fill = 'rgb(125, 125, 255)';
+				this.draw_props.stroke.width = 3;
+			}
+        },
+        
         center: function(){
             var out = new flowgraph.util.Point(this.left + this.width / 2, this.top + this.height /2);
           //  console.log('center of ', this.name, ':', out.toString());

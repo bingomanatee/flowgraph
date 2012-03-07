@@ -44,6 +44,15 @@
                 <input type="text" id="item_form_item_name"/>
             </div>
             <div class="item">
+            	<label>Strength</label>
+            	<select id="item_form_strength">
+            	<option value="-10">Optional Item</option>
+            	<option value="0" selected="selected">Standard Item</option>
+            	<option value="10">Critical Path Item</option>
+            	</select>
+            </div>
+            
+            <div class="item">
             <button id="item_form_button" onclick="update_show_item_form()">Update Item</button>
             </div>
         </div>
