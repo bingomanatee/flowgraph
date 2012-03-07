@@ -15,6 +15,8 @@ var flowgraph = {
 
     sprites:{},
 
+    util: {},
+
     model:{
         nodes:[],
 

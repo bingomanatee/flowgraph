@@ -4,12 +4,14 @@ flowgraph.init_events.push(function () {
     var selected_node;
     var moving_node;
     var new_node;
+    var over_line;
 
-    function show_status(){
+    function show_status() {
         $('#new_item_info').html(new_node ? new_node.toString() : '');
         $('#selected_item_info').html(selected_node ? selected_node.toString() : '');
         $('#moving_item_info').html(moving_node ? moving_node.toString() : '');
         $('#over_item_info').html(over_node ? over_node.toString() : '');
+        $('#over_line_info').html(over_line ? over_line.toString() : '');
         $('#fg_mode').html(flowgraph.mode ? flowgraph.mode : '&nbsp;');
     }
 
@@ -23,10 +25,22 @@ flowgraph.init_events.push(function () {
         sprites.forEach(function (sprite) {
             if (sprite.mouse_over()) {
                 _de_over_node();
+                _de_over_line();
                 over_node = sprite;
                 over_node.over = true;
             }
         });
+
+        if (!over_node) {
+            var lines = flowgraph.layers.get('links').items();
+            lines.forEach(function (sprite) {
+                if (sprite.mouse_over()) {
+                    _de_over_line();
+                    over_line = sprite;
+                    over_line.over = true;
+                }
+            });
+        }
         return true;
     }
 
@@ -35,19 +49,21 @@ flowgraph.init_events.push(function () {
             over_node.mouse_click();
             _select_a_node(over_node);
             return false;
+        } else if (over_line) {
+            over_line.mouse_click();
         } else {
             return true;
         }
 
     }
 
-    function _select_a_node(node){
+    function _select_a_node(node) {
         _deselect_node();
         selected_node = node;
         node.selected = true;
     }
 
-    function _select_node() {
+    function _select_mode_init() {
         flowgraph.mode = 'select';
 
         flowgraph.mouse.events._on_move = _select_move;
@@ -68,26 +84,33 @@ flowgraph.init_events.push(function () {
         over_node = null;
     }
     
-    function _selected_node_reset(){
-    	flowgraph.mode = '';
+    function _de_over_line() {
+        if (over_line) {
+            over_line.over = false;
+        }
+        over_line = null;
+    }
+
+    function _selected_node_reset() {
+        flowgraph.mode = '';
         flowgraph.mouse.events._on_move = null;
         flowgraph.mouse.events._on_click = null;
     }
 
     /* **************** MOVING NODE *************** */
-    
-    function _deselect_moving_node(){
-    	moving_node.moving = false;
+
+    function _deselect_moving_node() {
+        moving_node.moving = false;
         moving_node = null;
     }
 
     function _move_node_reset() {
-    	flowgraph.mode = '';
+        flowgraph.mode = '';
         console.log('resetting move node');
         flowgraph.mouse.events._on_move = flowgraph.mouse.events._on_click = false;
         flowgraph.layers.get('overlay').sprites.remove(new_node);
-        if (moving_node){
-        	_deselect_moving_node();
+        if (moving_node) {
+            _deselect_moving_node();
         }
     }
 
@@ -96,9 +119,9 @@ flowgraph.init_events.push(function () {
             _select_a_node(moving_node);
             _deselect_moving_node();
             return true;
-        } else if (over_node){
-        	moving_node = over_node;
-        	moving_node.moving = true;
+        } else if (over_node) {
+            moving_node = over_node;
+            moving_node.moving = true;
             return false;
         } else {
             return true;
@@ -109,11 +132,11 @@ flowgraph.init_events.push(function () {
         show_status();
 
         if (moving_node) {
-        	moving_node.top = flowgraph.mouse.snap_top(50);
-        	moving_node.left = flowgraph.mouse.snap_left(50);
-        	return true;
+            moving_node.top = flowgraph.mouse.snap_top(50);
+            moving_node.left = flowgraph.mouse.snap_left(50);
+            return true;
         } else {
-       		return _select_move();
+            return _select_move();
         }
     }
 
@@ -160,7 +183,7 @@ flowgraph.init_events.push(function () {
         _select_a_node(new_node);
         flowgraph.layers.get('drawing').sprites.add(new_node);
 
-        if (from_node && new_node){
+        if (from_node && new_node) {
             var link = new flowgraph.sprites.Link(from_node, new_node);
             flowgraph.layers.get('links').add(link);
         }
@@ -185,7 +208,7 @@ flowgraph.init_events.push(function () {
 
     var new_link = new flowgraph.sprites.Link();
 
-    function _link_node_click(){
+    function _link_node_click() {
         return true;
     }
 
@@ -206,8 +229,8 @@ flowgraph.init_events.push(function () {
             {id:'new_text', name:'New Text'},
             {id:'movie', name:'Movie', activate:_move_node, reset:_move_node_reset},
             {id:'connect', name:'Connect', activate:_link_node},
-            {id:'erase', name:'Erase', activate:_select_node},
-            {id:'select', name:'Select', activate:_select_node, reset:_selected_node_reset}
+            {id:'erase', name:'Erase'},
+            {id:'select', name:'Select', activate:_select_mode_init, reset:_selected_node_reset}
         ],
         top:0,
         left:0,

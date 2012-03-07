@@ -10,7 +10,8 @@
         <th>New</th>
         <th>Selected</th>
         <th>Moving</th>
-        <th>Over</th>
+        <th>Over Node</th>
+        <th>Over Line</th>
     </tr>
     <tr>
         <td id="fg_mode">
@@ -23,6 +24,8 @@
         <td id="moving_item_info">
         </td>
         <td id="over_item_info">
+        </td>
+        <td id="over_line_info">
         </td>
     </tr>
 </table>
@@ -70,13 +73,13 @@
 <script language="JavaScript" src="/js/flowgraph/CORE.js">
 </script>
 
-<script language="JavaScript" src="/js/flowgraph/Stack.js">
+<script language="JavaScript" src="/js/flowgraph/util/Point.js">
 </script>
 
-<script language="JavaScript" src="/js/flowgraph/Layer.js">
+<script language="JavaScript" src="/js/flowgraph/util/Stack.js">
 </script>
 
-<script language="JavaScript" src="/js/flowgraph/draw.js">
+<script language="JavaScript" src="/js/flowgraph/util/Layer.js">
 </script>
 
 <script language="JavaScript" src="/js/flowgraph/sprites/Image.js">
@@ -91,13 +94,16 @@
 <script language="JavaScript" src="/js/flowgraph/sprites/Item.js">
 </script>
 
+<script language="JavaScript" src="/js/flowgraph/draw.js">
+</script>
+
 <script language="JavaScript" src="/js/flowgraph/screen/tool_bar.js">
 </script>
 
 <script language="JavaScript" src="/js/flowgraph/mouse.js">
 </script>
 
-<script language="JavaScript" src="/js/flowgraph/test.js">
+<script language="JavaScript" src="/js/flowgraph/util/test.js">
 </script>
 
 <link rel="stylesheet" type="text/css" href="/js/libs/qunit/qunit.css"/>

@@ -27,12 +27,12 @@ flowgraph.sprites.Item = function () {
         dashed_image.onload = function () {
 
             var dashed_pattern = ctx.createPattern(dashed_image, 'repeat');
-            _dashed.style = dashed_pattern;
+            _dashed.fill = dashed_pattern;
         };
         dashed_image.src = 'http://localhost:5103/js/flowgraph/sprites/dashed.png';
     }
 
-    var _dashed = {style:'rgb(0,200,0)', width:2};
+    var _dashed = {fill:'rgb(0,200,0)', width:2};
 
     var item_count = 0;
 
@@ -53,7 +53,7 @@ flowgraph.sprites.Item = function () {
         this.left = 0;
         this.width = 120;
         this.height = 75;
-        this.type = 'item';
+
         this.name = 'untitiled';
         this.new = true;
         this.id = item_id++;
@@ -71,13 +71,13 @@ flowgraph.sprites.Item = function () {
         };
 
         this.moving_draw_props = {
-            stroke:_dashed
+            stroke: {fill:_dashed}
         };
 
         this.over_draw_props = {
             stroke:{
-                width:'4px',
-                style:'rgb(204, 153, 0)'
+                width:4,
+                fill:'rgb(255, 255, 0)'
             }
         }
 
@@ -91,15 +91,25 @@ flowgraph.sprites.Item = function () {
             fill: _selected_blend
         };
 
-        _.extend(this, props);
-
         this.name = 'New Item ' + (++item_count);
+
+        if (props){
+            _.extend(this, props);
+        }
+        this.type='item';
     }
 
     Item.prototype = {
+        type: 'item',
 
         pa: function(){
           return [this.left + this.width / 2, this.top + this.height /2]  ;
+        },
+
+        center: function(){
+            var out = new flowgraph.util.Point(this.left + this.width / 2, this.top + this.height /2);
+            console.log('center of ', this.name, ':', out.toString());
+            return out;
         },
 
         draw:function (ctx) {
@@ -113,9 +123,12 @@ flowgraph.sprites.Item = function () {
 
             if (this.new) {
                 _.extend(props, this.new_draw_props);
-            }  else if (this.over) {
+            }
+
+            if (this.over) {
                 _.extend(props, this.over_draw_props);
             }
+
             if (this.selected){
                 _.extend(props, this.selected_draw_props);
             }
@@ -151,7 +164,7 @@ flowgraph.sprites.Item = function () {
             flowgraph.draw.text(ctx, this.layer_index, pt, txt_props);
 
         },
-        diamond_style:{stroke:{width:2, style:'rgb(0,0,0)'}, fill:'rgb(102, 255, 51)'},
+        diamond_style:{stroke:{width:1, fill:'rgb(0,0,0)'}, fill:'rgb(102, 255, 51)'},
         diamond_offset:12,
         diamond_size:6,
         draw_diamond:function (ctx) {

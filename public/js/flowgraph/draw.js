@@ -12,13 +12,13 @@ flowgraph.draw = function () {
 
         last_redraw:0,
 
-        screen_refresh:5,
+        screen_refresh:250,
 
         line: function(ctx, path, props, no_state){
             if(!no_state){
                 ctx.save();
             }
-            console.log('line: ', path.join(', '));
+            console.log('line: ', path.join(', '), 'props:', JSON.stringify(props));
             ctx.beginPath();
 
             ctx.moveTo.apply(ctx, path.slice(0, 2));
@@ -30,7 +30,7 @@ flowgraph.draw = function () {
 
             ctx.closePath();
 
-            this.apply_stroke(props.stroke);
+            this.apply_stroke(ctx, props.stroke, props);
             ctx.stroke();
 
             if(!no_state){
@@ -142,7 +142,7 @@ flowgraph.draw = function () {
             }
 
             if (props.stroke) {
-                draw.apply_stroke(ctx, ctx.stroke, props);
+                draw.apply_stroke(ctx, props.stroke, props);
                 //    console.log('stroking rect ', dims);
                 ctx.stroke();
             }
@@ -173,6 +173,7 @@ flowgraph.draw = function () {
         },
 
         apply_stroke:function (ctx, stroke, props) {
+            console.log('applying stroke style: ', JSON.stringify(stroke));
             switch (stroke) {
                 case true:
 
@@ -181,16 +182,16 @@ flowgraph.draw = function () {
                 default:
                     if (_.isObject(stroke)) {
                         if (stroke.hasOwnProperty('width')) {
-                            //  console.log('setting line width to ', stroke.width);
+                              console.log('setting line width to ', stroke.width);
                             ctx.lineWidth = stroke.width;
                         }
-                        if (stroke.hasOwnProperty('style')) {
-                            //    console.log('setting line style to ', stroke.style);
-                            ctx.strokeStyle = stroke.style;
+                        if (stroke.hasOwnProperty('fill')) {
+                               console.log('setting line style to ', stroke.fill);
+                            ctx.strokeStyle = stroke.fill;
                         }
                     } else if (_.isFunction(stroke)) {
                         ctx.strokeStyle = stroke(ctx, props);
-                    } else {
+                    } else if (stroke) {
                         ctx.strokeStyle = stroke;
                     }
             }
