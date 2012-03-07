@@ -25,7 +25,7 @@ flowgraph.mouse = function () {
             for (var l = 0; l < layers.length; ++l) {
                 var layer = layers[l];
                 if (layer.mouse_click()) {
-                    console.log('click detected');
+                  //  console.log('click detected');
                     return;
                 }
             }
@@ -52,12 +52,12 @@ flowgraph.mouse = function () {
 
             click:function (e) {
                 if (!mouse.events._on_click) {
-                    console.log('no clicker; mouse click');
+                  //  console.log('no clicker; mouse click');
                     mouse.click();
                 } else if (mouse.events._on_click()) {
                     mouse.click();
                 } else {
-                    console.log('clicker intercepted: ', mouse.events._on_click.toString() );
+                  //  console.log('clicker intercepted: ', mouse.events._on_click.toString() );
                 }
 
             }

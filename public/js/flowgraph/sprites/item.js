@@ -108,7 +108,7 @@ flowgraph.sprites.Item = function () {
 
         center: function(){
             var out = new flowgraph.util.Point(this.left + this.width / 2, this.top + this.height /2);
-            console.log('center of ', this.name, ':', out.toString());
+          //  console.log('center of ', this.name, ':', out.toString());
             return out;
         },
 

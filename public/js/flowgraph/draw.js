@@ -12,13 +12,13 @@ flowgraph.draw = function () {
 
         last_redraw:0,
 
-        screen_refresh:250,
+        screen_refresh:50,
 
         line: function(ctx, path, props, no_state){
             if(!no_state){
                 ctx.save();
             }
-            console.log('line: ', path.join(', '), 'props:', JSON.stringify(props));
+      //      console.log('line: ', path.join(', '), 'props:', JSON.stringify(props));
             ctx.beginPath();
 
             ctx.moveTo.apply(ctx, path.slice(0, 2));
@@ -173,7 +173,7 @@ flowgraph.draw = function () {
         },
 
         apply_stroke:function (ctx, stroke, props) {
-            console.log('applying stroke style: ', JSON.stringify(stroke));
+        //    console.log('applying stroke style: ', JSON.stringify(stroke));
             switch (stroke) {
                 case true:
 
@@ -182,11 +182,11 @@ flowgraph.draw = function () {
                 default:
                     if (_.isObject(stroke)) {
                         if (stroke.hasOwnProperty('width')) {
-                              console.log('setting line width to ', stroke.width);
+                        //      console.log('setting line width to ', stroke.width);
                             ctx.lineWidth = stroke.width;
                         }
                         if (stroke.hasOwnProperty('fill')) {
-                               console.log('setting line style to ', stroke.fill);
+                      //         console.log('setting line style to ', stroke.fill);
                             ctx.strokeStyle = stroke.fill;
                         }
                     } else if (_.isFunction(stroke)) {

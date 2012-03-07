@@ -29,6 +29,21 @@
     position: absolute;
 }
 
+.edit_form h3 {
+	text-align: center;
+	padding: 0px;
+	margin: 0px 2px;
+	color: rgb(80, 80, 80);
+}
+
+.edit_form .x {
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	color: red;
+	font-weight: bold;
+}
+
 .edit_form {
     font-size: 100%;
     text-align: center;
@@ -45,8 +60,11 @@
 .edit_form .item label {
     display: inline-block;
     font-weight: bold;
-    width: 80px;
+    width: 100px;
     text-align: right;
+    padding-right: 4px;
+    font-siz: 60%;
+    color: rgb(50, 50, 50);
 }
 
 .edit_form input[type="text"] {

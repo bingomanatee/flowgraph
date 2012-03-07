@@ -34,3 +34,4 @@ module.exports = {
         framework.add_render_filter(_header, 100);
         callback();
     }
+ }

@@ -2,6 +2,7 @@ flowgraph.init_events.push(function () {
 
     var over_node;
     var selected_node;
+    var selected_line;
     var moving_node;
     var new_node;
     var over_line;
@@ -51,14 +52,24 @@ flowgraph.init_events.push(function () {
             return false;
         } else if (over_line) {
             over_line.mouse_click();
+            _select_a_line(over_line);
+            return false;
         } else {
             return true;
         }
 
     }
 
+    function _select_a_line(line) {
+        _deselect_node();
+        _deselect_line();
+        selected_line = line;
+        line.selected = true;
+    }
+
     function _select_a_node(node) {
         _deselect_node();
+        _deselect_line();
         selected_node = node;
         node.selected = true;
     }
@@ -75,6 +86,13 @@ flowgraph.init_events.push(function () {
             selected_node.selected = false;
         }
         selected_node = null;
+    }
+
+    function _deselect_line(line) {
+        if (selected_line) {
+            selected_line.selected = false;
+        }
+        selected_line = null;
     }
 
     function _de_over_node() {

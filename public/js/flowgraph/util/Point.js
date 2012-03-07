@@ -10,7 +10,7 @@ flowgraph.util.Point = function () {
 
         rel_angle:function (p) {
             if (this.equals(p)) {
-                console.log('equal points ', this.toString(), 'and', p.toString(), 'compared');
+            //    console.log('equal points ', this.toString(), 'and', p.toString(), 'compared');
                 return 0;
             }
 
@@ -76,7 +76,7 @@ flowgraph.util.Point = function () {
         add:function (p, y) {
             if (arguments.length > 1) {
                 var out = new Point(this.x + p, this.y + y);
-                console.log('offsetting', this.toString(), 'by ', p, y, out.toString());
+          //      console.log('offsetting', this.toString(), 'by ', p, y, out.toString());
                 return out;
             }
 
