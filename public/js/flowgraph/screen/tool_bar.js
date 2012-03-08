@@ -1,3 +1,8 @@
+/* ************ TOOL BAR ******** */
+/* note - this is an instance of the Toolbar class; 
+   potentially confusing, but there you have it. 
+   */
+
 flowgraph.init_events.push(function () {
 
     var over_node;
@@ -6,6 +11,7 @@ flowgraph.init_events.push(function () {
     var moving_node;
     var new_node;
     var over_line;
+    var last_selected_node;
 
     function show_status() {
         $('#new_item_info').html(new_node ? new_node.toString() : '');
@@ -227,13 +233,44 @@ flowgraph.init_events.push(function () {
     var new_link = new flowgraph.sprites.Link();
 
     function _link_node_click() {
-        return true;
+        if (over_node) {
+    		last_selected_node = selected_node;
+            over_node.mouse_click();
+            _select_a_node(over_node);
+        } else {
+            return true;
+        }
+        
+        if (!(last_selected_node.equals(selected_node))) {
+			if (last_selected_node && selected_node){
+				var l = new flowgraph.sprites.Link(last_selected_node, selected_node);
+				flowgraph.layers.get('links').add(l); // @TODO: 
+				last_selected_node = selected_node;
+			}
+		}
     }
 
+
+    function _link_move() {
+        show_status()
+        var sprites = flowgraph.layers.get('drawing').items();
+        _de_over_node();
+
+        sprites.forEach(function (sprite) {
+            if (sprite.mouse_over()) {
+                _de_over_node();
+                over_node = sprite;
+                over_node.over = true;
+            }
+        });
+
+        return true;
+    }
+    
     function _link_node() {
         flowgraph.mode = 'new_node';
 
-        flowgraph.mouse.events._on_move = null;
+        flowgraph.mouse.events._on_move = _link_move;
         flowgraph.mouse.events._on_click = _link_node_click;
     }
 

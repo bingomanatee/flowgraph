@@ -108,6 +108,10 @@ flowgraph.sprites.Item = function () {
 
     Item.prototype = {
         type: 'item',
+        
+        equals: function(item){
+        	return item.id == this.id;
+        	},
 
         pa: function(){
           return [this.left + this.width / 2, this.top + this.height /2]  ;
