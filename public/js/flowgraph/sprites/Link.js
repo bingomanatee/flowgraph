@@ -191,8 +191,8 @@ flowgraph.sprites.Link = function () {
             var tc = this.to_node.center();
             var a = tc.ra_nsew(fc);
 
-            var w = (os ? this.ARROW_SIZE : 0) + (this.from_node.width / 2);
-            var h = (os ? this.ARROW_SIZE : 0) + (this.from_node.height / 2);
+            var w = (os ? this.ARROW_SIZE : 0) + (this.to_node.width / 2);
+            var h = (os ? this.ARROW_SIZE : 0) + (this.to_node.height / 2);
 
             var p = new flowgraph.util.Point(Math.cos(a) * w,
                 Math.sin(a) * h);
