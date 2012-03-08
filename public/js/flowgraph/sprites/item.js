@@ -21,6 +21,30 @@ function update_show_item_form() {
     f.hide();
 }
 
+function _selected_blend(ctx, props){
+	var stops = [{stop: 0, color: 'rgb(255, 204, 102)'},
+		{stop: 0.25, color: 'rgb(255, 102, 0)'},
+		{stop: 1, color: 'rgb(0, 0, 0)'}];
+
+	var coords = [50, 50, 2, 20, 20, 150];
+
+   return flowgraph.draw.grad(ctx, stops, coords, 'radial');
+}
+
+function _item_blend(ctx, props){
+	var stops = [
+		{stop: 0, color: 'rgb(200, 150, 255)'},
+		{stop: 0.15, color: 'rgb(190, 145, 255)'},
+		{stop: 0.34, color: 'rgb(225, 204, 255)'},
+		{stop: 0.341, color: 'rgb(200, 125, 255)'},
+		{stop: 0.36, color: 'rgb(180, 100, 255)'},
+		{stop: 1, color: 'rgb(150, 60, 255)'}];
+
+	var coords = [0, 0, 0, 80];
+
+   return flowgraph.draw.grad(ctx, stops, coords, 'linear');
+}
+    
 flowgraph.sprites.Item = function () {
 
     var dashed_image = null;
@@ -41,15 +65,6 @@ flowgraph.sprites.Item = function () {
 
     var item_id = 1;
 
-    function _selected_blend(ctx, props){
-        var stops = [{stop: 0, color: 'rgb(255, 204, 102)'},
-            {stop: 0.25, color: 'rgb(255, 102, 0)'},
-            {stop: 1, color: 'rgb(0, 0, 0)'}];
-
-        var coords = [50, 50, 2, 20, 20, 200];
-
-       return flowgraph.draw.grad(ctx, stops, coords, 'radial');
-    }
 
     function Item(props) {
         this.top = 0;
@@ -65,10 +80,10 @@ flowgraph.sprites.Item = function () {
         this.moving = false;
 
         this.draw_props = {
-            fill:'rgb(175, 175, 200)',
+            fill: _item_blend,
             stroke:{
             style:'rgb(0, 0, 0)', 
-            width:2
+            width:1
             }
         };
 
@@ -85,7 +100,7 @@ flowgraph.sprites.Item = function () {
             stroke:{
                 width:4,
                 fill:'rgb(255, 255, 0)'
-            }
+            } 
         }
 
         this.label_draw_props = {
@@ -113,7 +128,7 @@ flowgraph.sprites.Item = function () {
 
         to_s: function(){
             var out = this._toString(this);
-            console.log('item to string: ', out);
+         //   console.log('item to string: ', out);
         },
         
         equals: function(item){
@@ -133,14 +148,14 @@ flowgraph.sprites.Item = function () {
 				this.width=80;
 				this.height = 60;
 				this.draw_props.fill = 'rgb(225, 225, 255)';
-				this.draw_props.stroke.width = 1;
+				this.draw_props.stroke.width = 0.5;
 			} else if (v < 10){
 				//standard
 				this.strength = 0;
 				this.width = 120;
 				this.height = 75;
-				this.draw_props.fill = 'rgb(175, 175, 200)';
-				this.draw_props.stroke.width = 2;
+				this.draw_props.fill = _item_blend;
+				this.draw_props.stroke.width = 1;
 			} else {
 				// critical path
 				this.strength = 10;

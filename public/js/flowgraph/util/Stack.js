@@ -43,7 +43,7 @@ flowgraph.Stack = function () {
         toString:function () {
             var out = [];
             this.items().forEach(function (s) {
-                console.log("foreach stack: ", s);
+             //   console.log("foreach stack: ", s);
                 out.push(s.to_s());
             });
 

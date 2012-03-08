@@ -60,7 +60,8 @@
         </div>
 
         <div id="link_form" class="edit_form" style="display: none">
-            <h3>Edit Line</h3>
+        <form onSubmit="return false" >
+        <h3>Edit Line</h3>
             <span class="x" onclick="$('#link_form').hide()">X</span>
 
             <div class="item">
@@ -80,6 +81,10 @@
                 <span type="text" id="link_form_to_name"/>
             </div>
             <div class="item">
+            	<label>&nbsp;</label>
+            	<input type="checkbox" id="lfr" name="lfr" value="1" /><b>Reverse</b>
+            </div>
+            <div class="item">
                 <label>Style</label>
                 <select id="link_form_style">
                     <option value="0" selected="selected">One Way</option>
@@ -91,6 +96,7 @@
             <div class="item">
                 <button id="link_form_button" onclick="update_show_link_form()">Update Link</button>
             </div>
+            </form>
         </div>
 
         <canvas width="1200" height="800" id="drawing">

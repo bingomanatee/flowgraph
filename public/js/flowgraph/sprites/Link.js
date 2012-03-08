@@ -16,6 +16,13 @@ function show_link_form(link) {
 function update_show_link_form() {
     show_link_form_link.manual_label = $('#link_form_link_label').val();
     show_link_form_link.style = $('#link_form_style').val();
+    var c = $('#lfr');
+   // console.log('checked value: ' , c.is(':checked'), c);
+    if ( c.is(':checked')){
+   		var old_from = show_link_form_link.from_node;
+   	 	show_link_form_link.from_node = show_link_form_link.to_node;
+   		show_link_form_link.to_node = old_from;
+    }
 
     var f = $('#link_form');
     f.hide();
@@ -87,7 +94,7 @@ flowgraph.sprites.Link = function () {
 
         to_s: function(){
             var out =  this._toString(this);
-            console.log('link to string: ', out);
+         //   console.log('link to string: ', out);
             return out;
         },
 
