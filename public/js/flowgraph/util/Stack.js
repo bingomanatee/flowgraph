@@ -42,8 +42,9 @@ flowgraph.Stack = function () {
 
         toString:function () {
             var out = [];
-            this.stack.forEach(function (s) {
-                out.push('index: ' + s.index + ", id: " + s.item.id);
+            this.items().forEach(function (s) {
+                console.log("foreach stack: ", s);
+                out.push(s.to_s());
             });
 
             return out.join("\n");

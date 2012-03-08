@@ -1,7 +1,7 @@
 /* ************ TOOL BAR ******** */
 /* note - this is an instance of the Toolbar class; 
-   potentially confusing, but there you have it. 
-   */
+ potentially confusing, but there you have it.
+ */
 
 flowgraph.init_events.push(function () {
 
@@ -107,7 +107,7 @@ flowgraph.init_events.push(function () {
         }
         over_node = null;
     }
-    
+
     function _de_over_line() {
         if (over_line) {
             over_line.over = false;
@@ -234,22 +234,24 @@ flowgraph.init_events.push(function () {
 
     function _link_node_click() {
         if (over_node) {
-    		last_selected_node = selected_node;
+            last_selected_node = selected_node;
             over_node.mouse_click();
             _select_a_node(over_node);
         } else {
             return true;
         }
-        
-        if (!(last_selected_node.equals(selected_node))) {
-			if (last_selected_node && selected_node){
-				var l = new flowgraph.sprites.Link(last_selected_node, selected_node);
-				flowgraph.layers.get('links').add(l); // @TODO: 
-				last_selected_node = selected_node;
-			}
-		}
-    }
 
+        if (!(last_selected_node.equals(selected_node))) {
+            if (last_selected_node && selected_node) {
+
+                if (!flowgraph.util.link_exists(last_selected_node, selected_node)) {
+                    var l = new flowgraph.sprites.Link(last_selected_node, selected_node);
+                    flowgraph.add_to_layer('links', l);
+                }
+                last_selected_node = selected_node;
+            }
+        }
+    }
 
     function _link_move() {
         show_status()
@@ -266,7 +268,7 @@ flowgraph.init_events.push(function () {
 
         return true;
     }
-    
+
     function _link_node() {
         flowgraph.mode = 'new_node';
 
@@ -298,4 +300,5 @@ flowgraph.init_events.push(function () {
     });
     flowgraph.layers.get('tools').sprites.add(toolbar);
 
-});
+})
+;

@@ -18,6 +18,10 @@ flowgraph.Layer = function () {
             return this.sprites.items(r);
         },
 
+        forEach: function(f){
+            return this.sprites.items().forEach(f);
+        },
+
         get: function(item){
             return this.sprites.get(item);
         },

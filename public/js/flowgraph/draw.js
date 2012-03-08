@@ -54,8 +54,10 @@ flowgraph.draw = function () {
                 var items = flowgraph.layers.items();
                 items.forEach(_layer_draw);
 
-                var dl = flowgraph.layers.get('drawing');
-                var state = '<pre>' + dl.sprites.toString() + '</pre>';
+                var dl = flowgraph.layer('drawing');
+                var ll = flowgraph.layer('links');
+
+                var state = '<pre>' + "SPRITES: \n" + dl.sprites.toString() + "\nLINES: \n" + ll.sprites.toString() + '</pre>';
                 $('#sprite_log').html(state);
             }
         },
@@ -93,6 +95,103 @@ flowgraph.draw = function () {
             ctx.fillText(str, pt[0], pt[1]);
 
             if (!no_state) {
+                ctx.restore();
+            }
+        },
+
+        roundrect: function(ctx, dims, props, no_state){
+            var radius = 10;
+            var TR = true;
+            var TL = true;
+            var BR = true;
+            var BL = true;
+    /*        if (props.hasOwnProperty('roundrect')){
+                var rr = props.roundrect;
+                if (rr.hasOwnProperty('radius')){
+                    radius = rr.radius;
+                }
+
+                if (rr.hasOwnProperty('TR')){
+                    TR = rr.TR;
+                }
+
+                if (rr.hasOwnProperty('TL')){
+                    TL = rr.TL;
+                }
+
+                if (rr.hasOwnProperty('BR')){
+                    BR = rr.BR;
+                }
+
+                if (rr.hasOwnProperty('BL')){
+                    BL = rr.BL;
+                }
+            } */
+
+            var left = dims[0];
+            var top = dims[1];
+            var width = dims[2] ;
+            var height = dims[3] ;
+
+            if (no_state){
+                throw new error('Roundrect does not linke noState;')
+            } else {
+
+                ctx.save();
+                ctx.translate(left, top);
+
+                ctx.beginPath();
+             /*   ctx.moveTo(radius, 0);
+                ctx.lineTo(width - radius, 0);
+                ctx.quadraticCurveTo( width, 0,  width,  radius);
+                 ctx.lineTo( width,  height - radius);
+                 ctx.quadraticCurveTo( width,  height,  width - radius,  height);
+                 ctx.lineTo( radius,  height);
+                 ctx.quadraticCurveTo(0,  height, 0,  height - radius);
+                 ctx.lineTo(0,  radius);
+                 ctx.quadraticCurveTo(0, 0,  radius, 0); */
+                
+                if (TL){
+                    ctx.moveTo(0, radius * 2);
+                    ctx.arcTo(0, 0,radius, 0,  radius);
+                    ctx.lineTo(2 * radius, 0);
+                } else {
+                    ctx.moveTo(0, 0);
+                }
+
+                if (TR){
+                    ctx.lineTo(width - radius * 2, 0);
+                    ctx.arcTo(width, 0, width, radius,  radius);
+                    ctx.lineTo(width, radius * 2);
+                } else {
+                    ctx.lineTo(0, width);
+                }
+
+                if (BR){
+                    ctx.lineTo(width, height - radius * 2);
+                    ctx.arcTo(width, height, width - radius, height,  radius);
+                    ctx.lineTo(width - radius * 2, height);
+                } else {
+                    ctx.lineTo(width, height);
+                }
+
+                if (BL){
+                    ctx.lineTo(radius * 2, height);
+                    ctx.arcTo(0, height, 0, height - radius,  radius);
+                    ctx.lineTo(0, height - radius * 2);
+                } else {
+                    ctx.lineTo(0, height);
+                }
+
+                if (TL){
+                    ctx.lineTo(0, radius);
+                } else {
+                    ctx.lineTo(0, 0);
+                }
+
+                ctx.closePath();
+                this.paint(ctx, props);
+
                 ctx.restore();
             }
         },
@@ -188,6 +287,9 @@ flowgraph.draw = function () {
                         if (stroke.hasOwnProperty('fill')) {
                       //         console.log('setting line style to ', stroke.fill);
                             ctx.strokeStyle = stroke.fill;
+                        }
+                        if (stroke.hasOwnProperty('join')){
+                            ctx.lineJoin = stroke.join;
                         }
                     } else if (_.isFunction(stroke)) {
                         ctx.strokeStyle = stroke(ctx, props);

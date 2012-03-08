@@ -34,8 +34,9 @@
     <div id="canvas_inner">
 
         <div id="item_form" class="edit_form" style="display: none">
-        <h3>Edit Item</h3>
-        <span class="x" onclick="$('#item_form').close()">X</span>
+            <h3>Edit Item</h3>
+            <span class="x" onclick="$('#item_form').close()">X</span>
+
             <div class="item">
                 <label>ID</label>
                 <span id="item_form_item_id">...</span>
@@ -45,22 +46,23 @@
                 <input type="text" id="item_form_item_name"/>
             </div>
             <div class="item">
-            	<label>Strength</label>
-            	<select id="item_form_strength">
-            	<option value="-10">Optional Item</option>
-            	<option value="0" selected="selected">Standard Item</option>
-            	<option value="10">Critical Path Item</option>
-            	</select>
+                <label>Strength</label>
+                <select id="item_form_strength">
+                    <option value="-10">Optional Item</option>
+                    <option value="0" selected="selected">Standard Item</option>
+                    <option value="10">Critical Path Item</option>
+                </select>
             </div>
-            
+
             <div class="item">
-            <button id="item_form_button" onclick="update_show_item_form()">Update Item</button>
+                <button id="item_form_button" onclick="update_show_item_form()">Update Item</button>
             </div>
         </div>
-        
+
         <div id="link_form" class="edit_form" style="display: none">
-        <h3>Edit Line</h3>
-        <span class="x" onclick="$('#link_form').hide()">X</span>
+            <h3>Edit Line</h3>
+            <span class="x" onclick="$('#link_form').hide()">X</span>
+
             <div class="item">
                 <label>ID</label>
                 <span id="link_form_link_id">...</span>
@@ -78,7 +80,16 @@
                 <span type="text" id="link_form_to_name"/>
             </div>
             <div class="item">
-            	<button id="link_form_button" onclick="update_show_link_form()">Update Link</button>
+                <label>Style</label>
+                <select id="link_form_style">
+                    <option value="0" selected="selected">One Way</option>
+                    <option value="10">Both Ways</option>
+                    <option value="20">One way (minor)</option>
+                    <option value="30">Both Ways (minor)</option>
+                </select>
+            </div>
+            <div class="item">
+                <button id="link_form_button" onclick="update_show_link_form()">Update Link</button>
             </div>
         </div>
 
@@ -115,6 +126,9 @@
 </script>
 
 <script language="JavaScript" src="/js/flowgraph/util/Stack.js">
+</script>
+
+<script language="JavaScript" src="/js/flowgraph/util/link_exists.js">
 </script>
 
 <script language="JavaScript" src="/js/flowgraph/util/Layer.js">

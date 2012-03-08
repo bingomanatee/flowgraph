@@ -108,6 +108,13 @@ flowgraph.sprites.Item = function () {
 
     Item.prototype = {
         type: 'item',
+
+        _toString: _.template('ITEM id <%= id %> (<%= name %>, at <%= left %>, <%= top %>'),
+
+        to_s: function(){
+            var out = this._toString(this);
+            console.log('item to string: ', out);
+        },
         
         equals: function(item){
         	return item.id == this.id;
@@ -176,9 +183,10 @@ flowgraph.sprites.Item = function () {
             }
 
 
+            flowgraph.draw.roundrect(ctx, this.dims(), props);
+
             ctx.save();
             ctx.translate(this.left, this.top);
-            flowgraph.draw.rect(ctx, this.dims(true), props, true);
             this.draw_label(ctx);
             this.draw_diamond(ctx);
             ctx.restore();

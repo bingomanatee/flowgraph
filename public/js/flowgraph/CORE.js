@@ -23,6 +23,14 @@ var flowgraph = {
         links:[]
     },
 
+    layer: function(name){
+        return flowgraph.layers.get(name);
+    },
+
+    add_to_layer: function(name, item){
+        flowgraph.layer(name).add(item);
+    },
+
     get_layer_item:function (layer, id) {
         var l = this.layers.get(layer);
         if (!l){
