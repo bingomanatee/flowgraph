@@ -243,7 +243,7 @@ flowgraph.draw = function () {
 			}
 
 			if (TL){
-				ctx.lineTo(0, radius);
+				ctx.lineTo(0, radius * 2);
 			} else {
 				ctx.lineTo(0, 0);
 			}

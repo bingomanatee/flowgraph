@@ -33,16 +33,15 @@ function _selected_blend(ctx, props){
 
 function _item_blend(ctx, props){
 	var stops = [
-		{stop: 0, color: 'rgb(200, 150, 255)'},
-		{stop: 0.15, color: 'rgb(190, 145, 255)'},
-		{stop: 0.34, color: 'rgb(225, 204, 255)'},
-		{stop: 0.341, color: 'rgb(200, 125, 255)'},
-		{stop: 0.36, color: 'rgb(180, 100, 255)'},
-		{stop: 1, color: 'rgb(150, 60, 255)'}];
+        {stop: 0.0, color: '#9999FF'},
+        {stop: 0.5, color: '#CCCCFF'},
+        {stop: 0.525, color: '#6666FF'},
+        				{stop: 0.8, color: '#9999FF'}
+    ];
 
-	var coords = [0, 0, 0, 80];
+	var coords = [80, -400, 400, 40, -400, 466];
 
-   return flowgraph.draw.grad(ctx, stops, coords, 'linear');
+   return flowgraph.draw.grad(ctx, stops, coords, 'radial');
 }
     
 flowgraph.sprites.Item = function () {
@@ -197,8 +196,11 @@ flowgraph.sprites.Item = function () {
             	_.extend(props, this.moving_draw_props);
             }
 
-
             flowgraph.draw.roundrect(ctx, this.dims(), props);
+
+            if (!this.selected){
+           //     flowgraph.draw.roundrect(ctx, this.dims(), {fill: 'rgba(51, 102, 204, 0.33)'});
+            }
 
             ctx.save();
             ctx.translate(this.left, this.top);

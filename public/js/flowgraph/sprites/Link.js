@@ -15,13 +15,13 @@ function show_link_form(link) {
 
 function update_show_link_form() {
     show_link_form_link.manual_label = $('#link_form_link_label').val();
-    show_link_form_link.style = $('#link_form_style').val();
+    show_link_form_link.style = parseInt($('#link_form_style').val());
     var c = $('#lfr');
-   // console.log('checked value: ' , c.is(':checked'), c);
-    if ( c.is(':checked')){
-   		var old_from = show_link_form_link.from_node;
-   	 	show_link_form_link.from_node = show_link_form_link.to_node;
-   		show_link_form_link.to_node = old_from;
+    // console.log('checked value: ' , c.is(':checked'), c);
+    if (c.is(':checked')) {
+        var old_from = show_link_form_link.from_node;
+        show_link_form_link.from_node = show_link_form_link.to_node;
+        show_link_form_link.to_node = old_from;
     }
 
     var f = $('#link_form');
@@ -90,11 +90,11 @@ flowgraph.sprites.Link = function () {
 
     Link.prototype = {
 
-        _toString: _.template('LINK id <%= id %> (<%= manual_label %>), style <%= style %> from <%= from_node.to_s() %> to <%= to_node.to_s() %>'),
+        _toString:_.template('LINK id <%= id %> (<%= manual_label %>), style <%= style %> from <%= from_node.to_s() %> to <%= to_node.to_s() %>'),
 
-        to_s: function(){
-            var out =  this._toString(this);
-         //   console.log('link to string: ', out);
+        to_s:function () {
+            var out = this._toString(this);
+            //   console.log('link to string: ', out);
             return out;
         },
 
@@ -160,7 +160,21 @@ flowgraph.sprites.Link = function () {
                 _.extend(line_props, this.line_over_props);
             }
 
-            var path = this.start_point(1.5 * this.ARROW_SIZE).to_a().concat(this.end_point().to_a());
+
+            switch (this.style) {
+                case Link.BOTH_WAYS_WEAK:
+                    _.extend(line_props, this.line_weak_props);
+                    break;
+                case Link.ONE_WAY_WEAK:
+                    _.extend(line_props, this.line_weak_props);
+                    break;
+            }
+
+            var p1 = this.start_point();
+            var p2 = this.end_point();
+            var a = p2.rel_angle(p1);
+
+            var path = p1.vector(a + Math.PI, this.ARROW_SIZE, true).to_a().concat(p2.vector(a, this.ARROW_SIZE, true).to_a());
             flowgraph.draw.line(ctx, path, line_props);
         },
 
@@ -175,9 +189,7 @@ flowgraph.sprites.Link = function () {
             return false;
         },
 
-        draw_arrowheads:function (ctx) {
-            var p1 = this.start_point();
-            var p2 = this.end_point();
+        _arrowhead:function (ctx, p1, p2) {
             var a = p2.rel_angle(p1);
 
             ctx.save();
@@ -206,23 +218,33 @@ flowgraph.sprites.Link = function () {
 
             flowgraph.draw.paint(ctx, props, true);
             ctx.restore();
-            /*
-             var line_props = {};
-             _.extend(line_props, this.line_props);
-             if (this.mouse_over()) {
-             _.extend(line_props, this.line_over_props);
-             }
+        },
 
-             path = p1.to_a().concat(this.end_point().to_a().concat(p2.to_a()));
-             flowgraph.draw.line(ctx, path, line_props);
-             //    console.log('arrowhead: ' + path.join(', '));
 
-             p1 = this.end_point().add(-this.ARROW_SIZE, this.ARROW_SIZE);
-             p2 = this.end_point().add(this.ARROW_SIZE, -this.ARROW_SIZE);
+        draw_arrowheads:function (ctx) {
+            var p1 = this.start_point();
+            var p2 = this.end_point();
 
-             path = p1.to_a().concat(this.end_point().to_a().concat(p2.to_a()));
-             flowgraph.draw.line(ctx, path, line_props);
-             //  	console.log('arrowhead: ' + path.join(', ')); */
+            var a = p2.rel_angle(p1);
+
+            var p1v = p1.vector(a + Math.PI, this.ARROW_SIZE, true);
+            var p2v = p2.vector(a, this.ARROW_SIZE, true);
+
+
+            var arrow_style = {stroke: {width: 4, fill: 'rgb(255, 0, 0)'}};
+           // flowgraph.draw.line(ctx, p1.to_a().concat(p1v.to_a()), arrow_style);
+           // flowgraph.draw.line(ctx, p2.to_a().concat(p2v.to_a()), arrow_style);
+
+            this._arrowhead(ctx, p1v, p2v);
+
+            switch (this.style) {
+                case Link.BOTH_WAYS_WEAK:
+                    this._arrowhead(ctx, p2v, p1v);
+                    break;
+                case Link.BOTH_WAYS:
+                    this._arrowhead(ctx, p2v, p1v);
+                    break;
+            }
         },
 
         center:function () {
@@ -248,10 +270,10 @@ flowgraph.sprites.Link = function () {
             }
         },
 
-        ARROW_SIZE:8,
+        ARROW_SIZE:12,
         CENTER_RAD:15,
 
-        start_point:function (os) {
+        start_point:function () {
             if (!(this.from_node && this.to_node)) {
                 return;
             }
@@ -259,27 +281,16 @@ flowgraph.sprites.Link = function () {
             var tc = this.to_node.center();
             //    console.log('link from ', fc.toString(), 'to', tc.toString());
             var a = fc.ra_nsew(tc);
-            var offset = 0;
-            switch (os) {
-                case true:
-                    offset = this.ARROW_SIZE;
-                    break;
 
-                default:
-                    if (_.isNumber(os)) {
-                        offset = os;
-                    }
-            }
-
-            var w = offset + (this.from_node.width / 2);
-            var h = offset + (this.from_node.height / 2);
+            var w = (this.from_node.width / 2);
+            var h = (this.from_node.height / 2);
             var p = new flowgraph.util.Point(Math.cos(a) * w,
                 Math.sin(a) * h);
 
             return p.add(fc);
         },
 
-        end_point:function (os) {
+        end_point:function () {
 
             if (!(this.from_node && this.to_node)) {
                 return;
@@ -288,8 +299,8 @@ flowgraph.sprites.Link = function () {
             var tc = this.to_node.center();
             var a = tc.ra_nsew(fc);
 
-            var w = (os ? this.ARROW_SIZE : 0) + (this.to_node.width / 2);
-            var h = (os ? this.ARROW_SIZE : 0) + (this.to_node.height / 2);
+            var w = (this.to_node.width / 2);
+            var h = (this.to_node.height / 2);
 
             var p = new flowgraph.util.Point(Math.cos(a) * w,
                 Math.sin(a) * h);
@@ -299,4 +310,5 @@ flowgraph.sprites.Link = function () {
     }
 
     return Link;
-}()
+}
+    ()

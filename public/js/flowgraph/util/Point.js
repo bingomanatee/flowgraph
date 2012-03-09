@@ -28,6 +28,18 @@ flowgraph.util.Point = function () {
             return [this.x, this.y];
         },
 
+        vector: function(a, m, relative){
+            if (!m){
+                m = 1;
+            }
+            var v = new Point(Math.cos(a) * m, Math.sin(a) * m);
+            if (relative){
+                return this.add(v);
+            } else {
+                return v;
+            }
+        },
+
         ra_nsew:function (p) {
             var a = this.rel_angle(p);
             if (a < Math.PI / 4) {
