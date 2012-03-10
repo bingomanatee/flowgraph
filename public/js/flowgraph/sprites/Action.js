@@ -24,27 +24,40 @@ function update_show_item_form() {
 function _selected_blend(ctx, props){
 	var stops = [{stop: 0, color: 'rgb(255, 204, 102)'},
 		{stop: 0.25, color: 'rgb(255, 102, 0)'},
-		{stop: 1, color: 'rgb(0, 0, 0)'}];
+		{stop: 1, color: 'rgb(0, 0, 0)'},
+		];
 
-	var coords = [50, 50, 2, 20, 20, 150];
+	var coords = [60, 40, 10, 60, 24, 100];
 
    return flowgraph.draw.grad(ctx, stops, coords, 'radial');
 }
 
 function _item_blend(ctx, props){
 	var stops = [
-        {stop: 0.0, color: '#9999FF'},
-        {stop: 0.5, color: '#CCCCFF'},
-        {stop: 0.525, color: '#6666FF'},
-        				{stop: 0.8, color: '#9999FF'}
+        {stop: 0.0, color: '#CC99FF'},
+        {stop: 0.6, color: '#CCCCFF'},
+        {stop: 0.675, color: '#9999CC'},
+        {stop: 0.76, color: '#330066'},
+        {stop: 1, color: '#330099'}
     ];
 
-	var coords = [80, -400, 400, 40, -400, 466];
+	var coords = [0, 0, 0, 60];
 
-   return flowgraph.draw.grad(ctx, stops, coords, 'radial');
+   return flowgraph.draw.grad(ctx, stops, coords, 'linear');
+}
+
+function _item_blend_hl(ctx, props){
+	var stops = [
+	{stop: 0.0, color: 'rgba(255, 255, 255, 1)'},
+	{stop: 0.25, color: 'rgba(255, 255, 255, 0.2)'},
+	{stop: 1, color: 'rgba(255, 255, 255, 0.0)'}
+	];
+	var coords = [60, 40, 10, 60, 24, 200];
+	
+	return flowgraph.draw.grad(ctx, stops, coords, 'radial');
 }
     
-flowgraph.sprites.Item = function () {
+flowgraph.sprites.Action = function () {
 
     var dashed_image = null;
 
@@ -65,7 +78,7 @@ flowgraph.sprites.Item = function () {
     var item_id = 1;
 
 
-    function Item(props) {
+    function Action(props) {
         this.top = 0;
         this.left = 0;
         this.width = 120;
@@ -85,6 +98,10 @@ flowgraph.sprites.Item = function () {
             width:1
             }
         };
+        
+        this.hl = {
+        	fill: _item_blend_hl
+        	}
 
         this.new_draw_props = {
             fill:'rgba(255, 204, 0, 0.15)',
@@ -112,7 +129,7 @@ flowgraph.sprites.Item = function () {
             fill: _selected_blend
         };
 
-        this.name = 'New Item ' + (++item_count);
+        this.name = 'New Action ' + (++item_count);
 
         if (props){
             _.extend(this, props);
@@ -120,7 +137,7 @@ flowgraph.sprites.Item = function () {
         this.type='item';
     }
 
-    Item.prototype = {
+    Action.prototype = {
         type: 'item',
 
         _toString: _.template('ITEM id <%= id %> (<%= name %>, at <%= left %>, <%= top %>'),
@@ -128,6 +145,21 @@ flowgraph.sprites.Item = function () {
         to_s: function(){
             var out = this._toString(this);
          //   console.log('item to string: ', out);
+        },
+        
+        to_j: function (stringify){
+        	var out = {
+        	id: this.id, 
+        	name: this.name,
+        	top: this.top,
+        	left: this.left,
+        	style: this.style };
+        	
+        	if (stringify){
+        		return JSON.stringify(out);
+        	} else {
+        		return out;
+        	}
         },
         
         equals: function(item){
@@ -199,7 +231,7 @@ flowgraph.sprites.Item = function () {
             flowgraph.draw.roundrect(ctx, this.dims(), props);
 
             if (!this.selected){
-           //     flowgraph.draw.roundrect(ctx, this.dims(), {fill: 'rgba(51, 102, 204, 0.33)'});
+                flowgraph.draw.roundrect(ctx, this.dims(), this.hl);
             }
 
             ctx.save();
@@ -305,5 +337,5 @@ flowgraph.sprites.Item = function () {
         }
     }
 
-    return Item;
+    return Action;
 }();

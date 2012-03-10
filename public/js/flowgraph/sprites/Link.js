@@ -89,6 +89,8 @@ flowgraph.sprites.Link = function () {
     Link.BOTH_WAYS_WEAK = 30;
 
     Link.prototype = {
+    
+    	to_j: function
 
         _toString:_.template('LINK id <%= id %> (<%= manual_label %>), style <%= style %> from <%= from_node.to_s() %> to <%= to_node.to_s() %>'),
 
@@ -108,6 +110,16 @@ flowgraph.sprites.Link = function () {
                 return this.manual_label;
             }
             var out = '';
+            var join = ' to ';
+            switch (this.style) {
+                case Link.BOTH_WAYS_WEAK:
+                    join = ' <--> ';
+                    break;
+                case Link.ONE_WAY_WEAK:
+                    join = ' <--> ';
+                    break;
+            }
+            
             if (this.from_node) {
 
                 out += this.from_node.name;
@@ -142,9 +154,13 @@ flowgraph.sprites.Link = function () {
             ctx.save();
             ctx.translate(c.x, c.y);
             var a = this.start_point().rel_angle(this.end_point());
-            if ((a > Math.PI)) {
+            
+            a = flowgraph.util.Point.snap_angle(a, Math.PI/4);
+            
+            if ((a >= Math.PI)) {
                 a -= Math.PI;
             }
+            
             ctx.rotate(a - Math.PI / 2);
 
             flowgraph.draw.text(ctx, this.label(), [0, 0], this.label_draw_props);

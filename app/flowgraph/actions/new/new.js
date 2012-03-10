@@ -24,7 +24,7 @@ module.exports = {
                 callback(fgp.validation_errors(err));
             } else {
                 req_state.put_flash(util.format('Project &quot;%s&quot; (%s) saved!', project.label, project._id.toString()),
-                    'info', util.format('/project/%s', project._id.toString()));
+                    'info', util.format('/flowgraph/%s', project._id.toString()));
             }
         }
 

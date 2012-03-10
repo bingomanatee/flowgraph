@@ -189,7 +189,7 @@ flowgraph.init_events.push(function () {
         }
         flowgraph.mode = 'new_node';
 
-        new_node = new flowgraph.sprites.Item({});
+        new_node = new flowgraph.sprites.Action({});
         flowgraph.layers.get('overlay').sprites.add(new_node);
         flowgraph.mouse.events._on_move = _new_node_move;
 

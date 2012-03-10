@@ -41,6 +41,8 @@ var flowgraph = {
     },
 
     init:function (div_id) {
+        var li = setInterval(function(){
+        if (!flowgraph.Layer && flowgraph.Action) return;
         flowgraph.canvas = document.getElementById(div_id);
         flowgraph.jcanvas = $('#' + div_id);
         flowgraph.ctx = flowgraph.canvas.getContext('2d');
@@ -65,6 +67,8 @@ var flowgraph = {
         });
 
         flowgraph.draw.init();
+        clearInterval(li);
+        }, 500);
     }
 };
 

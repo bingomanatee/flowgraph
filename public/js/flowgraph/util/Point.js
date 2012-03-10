@@ -4,7 +4,29 @@ flowgraph.util.Point = function () {
         this.x = x;
         this.y = y;
     }
+    
+    Point.snap_angle(a, inc){
+    	var snap_a = a;
+    	var snap_dist = Point.angle_dist(a, 0);
+    }
 
+	Point.angle_dist(a, b){
+		var dist = Math.abs(a - b);
+		if (dist > Math.PI){
+			dist = (2 * Math.PI) - dist; 
+		}
+	}
+	
+	Point.angle_range = function (a) {
+            var c = Math.PI * 2;
+            while (a < 0) {
+                a += c;
+            }
+            while (a > c) {
+                a -= c;
+            }
+            return a;
+        }
 
     Point.prototype = {
 
@@ -17,7 +39,7 @@ flowgraph.util.Point = function () {
             var out = Math.atan2(p.y - this.y, p.x - this.x);
             //   console.log('from', this.toString(), 'to', this.toString(), ':', out);
 
-            return this.angle_range(out);
+            return Point.angle_range(out);
         },
 
         toString:function () {
@@ -93,17 +115,6 @@ flowgraph.util.Point = function () {
             }
 
             return new Point(this.x + p.x, this.y + p.y);
-        },
-
-        angle_range:function (a) {
-            var c = Math.PI * 2;
-            while (a < 0) {
-                a += c;
-            }
-            while (a > c) {
-                a -= c;
-            }
-            return a;
         }
 
     }
