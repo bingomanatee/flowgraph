@@ -34,7 +34,7 @@ flowgraph.init_events.push(function () {
                 _de_over_node();
                 _de_over_line();
                 over_node = sprite;
-                over_node.over = true;
+                over_node.set('is_over', true);
             }
         });
 
@@ -44,7 +44,7 @@ flowgraph.init_events.push(function () {
                 if (sprite.mouse_over()) {
                     _de_over_line();
                     over_line = sprite;
-                    over_line.over = true;
+                    over_line.set('is_over', true);
                 }
             });
         }
@@ -57,8 +57,8 @@ flowgraph.init_events.push(function () {
             _select_a_node(over_node);
             return false;
         } else if (over_line) {
+            _select_a_link(over_line);
             over_line.mouse_click();
-            _select_a_line(over_line);
             return false;
         } else {
             return true;
@@ -66,18 +66,18 @@ flowgraph.init_events.push(function () {
 
     }
 
-    function _select_a_line(line) {
+    function _select_a_link(line) {
         _deselect_node();
-        _deselect_line();
+        _deselect_link();
         selected_line = line;
-        line.selected = true;
+        line.set('is_selected', true);
     }
 
     function _select_a_node(node) {
         _deselect_node();
-        _deselect_line();
+        _deselect_link();
         selected_node = node;
-        node.selected = true;
+        node.set('is_selected', true);
     }
 
     function _select_mode_init() {
@@ -89,28 +89,28 @@ flowgraph.init_events.push(function () {
 
     function _deselect_node() {
         if (selected_node) {
-            selected_node.selected = false;
+            selected_node.set('is_selected', false);
         }
         selected_node = null;
     }
 
-    function _deselect_line(line) {
+    function _deselect_link(line) {
         if (selected_line) {
-            selected_line.selected = false;
+            selected_line.set('is_selected', false);
         }
         selected_line = null;
     }
 
     function _de_over_node() {
         if (over_node) {
-            over_node.over = false;
+            over_node.set('is_over', false);
         }
         over_node = null;
     }
 
     function _de_over_line() {
         if (over_line) {
-            over_line.over = false;
+            over_line.set('is_over', false);
         }
         over_line = null;
     }
@@ -156,8 +156,8 @@ flowgraph.init_events.push(function () {
         show_status();
 
         if (moving_node) {
-            moving_node.top = flowgraph.mouse.snap_top(50);
-            moving_node.left = flowgraph.mouse.snap_left(50);
+            moving_node.set('top', flowgraph.mouse.snap_top(50));
+            moving_node.set('left', flowgraph.mouse.snap_left(50));
             return true;
         } else {
             return _select_move();
@@ -175,8 +175,8 @@ flowgraph.init_events.push(function () {
     function _new_node_move() {
         show_status();
 
-        new_node.top = flowgraph.mouse.snap_top(50);
-        new_node.left = flowgraph.mouse.snap_left(50);
+        new_node.set('top', flowgraph.mouse.snap_top(50));
+        new_node.set('left', flowgraph.mouse.snap_left(50));
         return true;
     }
 
@@ -189,26 +189,27 @@ flowgraph.init_events.push(function () {
         }
         flowgraph.mode = 'new_node';
 
-        new_node = new flowgraph.sprites.Action({});
+        new_node = new flowgraph.sprites.Action({is_new: true});
         flowgraph.layers.get('overlay').sprites.add(new_node);
         flowgraph.mouse.events._on_move = _new_node_move;
 
-        flowgraph.mouse.events._on_click = _node_click;
+        flowgraph.mouse.events._on_click = _new_node_click;
         from_node = selected_node;
     }
 
-    function _node_click() {
+    function _new_node_click() {
         if (flowgraph.mouse.left < 100) {
             return true;
         }
         flowgraph.mouse.events._on_move = flowgraph.mouse.events._on_click = false;
         flowgraph.layers.get('overlay').sprites.remove(new_node);
-        new_node.new = false;
+        new_node.set('is_new', false);
         _select_a_node(new_node);
         flowgraph.layers.get('drawing').sprites.add(new_node);
+        flowgraph.collections.actions.add(new_node);
 
         if (from_node && new_node) {
-            var link = new flowgraph.sprites.Link(from_node, new_node);
+            var link = new flowgraph.sprites.Link({from_node: from_node, to_node: new_node});
             flowgraph.layers.get('links').add(link);
         }
         new_node = null;
@@ -216,13 +217,13 @@ flowgraph.init_events.push(function () {
 
         toolbar.select_tool('select');
 
-        console.log('new node set to null');
+        console.log('is_new node set to null');
         return false;
     }
 
     function _new_node_reset() {
         flowgraph.mode = '';
-        console.log('resetting new node');
+        console.log('resetting is_new node');
         flowgraph.mouse.events._on_move = flowgraph.mouse.events._on_click = false;
         flowgraph.layers.get('overlay').sprites.remove(new_node);
         new_node = null;
@@ -245,7 +246,7 @@ flowgraph.init_events.push(function () {
             if (last_selected_node && selected_node) {
 
                 if (!flowgraph.util.link_exists(last_selected_node, selected_node)) {
-                    var l = new flowgraph.sprites.Link(last_selected_node, selected_node);
+                    var l = new flowgraph.sprites.Link({from_node: last_selected_node, to_node: selected_node});
                     flowgraph.add_to_layer('links', l);
                 }
                 last_selected_node = selected_node;
@@ -300,5 +301,4 @@ flowgraph.init_events.push(function () {
     });
     flowgraph.layers.get('tools').sprites.add(toolbar);
 
-})
-;
+});

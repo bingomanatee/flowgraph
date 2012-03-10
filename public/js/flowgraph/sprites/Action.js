@@ -2,64 +2,34 @@ var show_item_form_item;
 function show_item_form(item) {
     var f = $('#item_form');
     f.show();
-    f.css('top', item.top);
-    f.css('left', item.left);
-    $('#item_form_item_name').val(item.name);
-    $('#item_form_item_id').html(item.id);
-    $('#item_form_strength').val(item.strength);
+    f.css('top', item.get('top'));
+    f.css('left', item.get('left'));
+    $('#item_form_item_name').val(item.get('name'));
+    $('#item_form_item_id').html(item.get('id'));
+    $('#item_form_strength').val(item.get('strength'));
     show_item_form_item = item;
 }
 
 function update_show_item_form() {
     var name = $('#item_form_item_name').val();
     if (name) {
-        show_item_form_item.name = name;
+        show_item_form_item.set('name', name);
     }
     show_item_form_item.set_strength($('#item_form_strength').val());
-    
+
     var f = $('#item_form');
     f.hide();
 }
 
-function _selected_blend(ctx, props){
-	var stops = [{stop: 0, color: 'rgb(255, 204, 102)'},
-		{stop: 0.25, color: 'rgb(255, 102, 0)'},
-		{stop: 1, color: 'rgb(0, 0, 0)'},
-		];
-
-	var coords = [60, 40, 10, 60, 24, 100];
-
-   return flowgraph.draw.grad(ctx, stops, coords, 'radial');
-}
-
-function _item_blend(ctx, props){
-	var stops = [
-        {stop: 0.0, color: '#CC99FF'},
-        {stop: 0.6, color: '#CCCCFF'},
-        {stop: 0.675, color: '#9999CC'},
-        {stop: 0.76, color: '#330066'},
-        {stop: 1, color: '#330099'}
-    ];
-
-	var coords = [0, 0, 0, 60];
-
-   return flowgraph.draw.grad(ctx, stops, coords, 'linear');
-}
-
-function _item_blend_hl(ctx, props){
-	var stops = [
-	{stop: 0.0, color: 'rgba(255, 255, 255, 1)'},
-	{stop: 0.25, color: 'rgba(255, 255, 255, 0.2)'},
-	{stop: 1, color: 'rgba(255, 255, 255, 0.0)'}
-	];
-	var coords = [60, 40, 10, 60, 24, 200];
-	
-	return flowgraph.draw.grad(ctx, stops, coords, 'radial');
-}
-    
 flowgraph.sprites.Action = function () {
 
-    var dashed_image = null;
+    /* ********** STRENGTH RANGES **************** */
+
+    var STRENGTH_MINOR = 'minor';
+    var STRENGTH_NORMAL = 'normal';
+    var STRENGTH_MAJOR = 'major';
+
+    /* ************ DRAW PROPS ******************* */
 
     function _init_dashed_image(ctx) {
         dashed_image = new Image();
@@ -71,183 +41,230 @@ flowgraph.sprites.Action = function () {
         dashed_image.src = 'http://localhost:5103/js/flowgraph/sprites/dashed.png';
     }
 
+    function _selected_blend(ctx, props) {
+        var stops = [
+            {stop:0, color:'rgb(255, 204, 102)'},
+            {stop:0.25, color:'rgb(255, 102, 0)'},
+            {stop:1, color:'rgb(0, 0, 0)'}
+        ];
+
+        var coords = [60, 40, 10, 60, 24, 100];
+
+        return flowgraph.draw.grad(ctx, stops, coords, 'radial');
+    }
+
+    function _item_blend_hl(ctx, props) {
+        var stops = [
+            {stop:0.0, color:'rgba(255, 255, 255, 0.8)'},
+            {stop:0.25, color:'rgba(255, 255, 255, 0.2)'},
+            {stop:1, color:'rgba(255, 255, 255, 0.0)'}
+        ];
+        var coords = [60, 40, 10, 60, 24, 200];
+
+        return flowgraph.draw.grad(ctx, stops, coords, 'radial');
+    }
+
+    function _item_blend(ctx, props) {
+        var stops = [
+            {stop:0.0, color:'#a69ddf'},
+            {stop:0.6, color:'#ffffff'},
+            {stop:0.6125, color:'#ebe8ff'},
+            {stop:1, color:'#847eac'}
+        ];
+
+        var coords = [0, 0, 0, 60];
+
+        return flowgraph.draw.grad(ctx, stops, coords, 'linear');
+    }
+
+    function _item_blend_alt(ctx, props) {
+        var stops = [
+            {stop:0.0, color:'#9999FF'},
+            {stop:0.5, color:'#CCCCFF'},
+            {stop:0.525, color:'#6666FF'},
+            {stop:0.8, color:'#9999FF'}
+        ];
+
+        var coords = [80, -400, 400, 40, -400, 466];
+
+        return flowgraph.draw.grad(ctx, stops, coords, 'radial');
+    }
+
     var _dashed = {fill:'rgb(0,200,0)', width:2};
 
+    /* ******************** DRAW PROPS OBJ ************* */
+
+    var draw_props = {};
+
+    draw_props[STRENGTH_MAJOR] = {
+        fill:_item_blend,
+        stroke_first:true,
+        stroke:{
+            style:'rgb(0, 0, 0)',
+            width:2
+        }
+    };
+
+    draw_props[STRENGTH_NORMAL] = {
+        fill:_item_blend,
+        stroke_first:true,
+        stroke:{
+            style:'rgb(0, 0, 0)',
+            width:1
+        }
+    };
+
+    draw_props[STRENGTH_MINOR] = {
+        fill:'rgb(204, 204, 255)',
+        stroke:{
+            style:'rgb(0,0,0)',
+            width:1
+        }
+    };
+
+    draw_props['SELECTED'] = {
+        fill: _selected_blend
+    }
+
+    draw_props['OVER'] = {
+        stroke:{
+            width:4,
+            fill:'rgb(255, 102, 0)'
+        }
+    }
+
+    draw_props['NEW'] = {
+        fill:'rgba(255, 204, 0, 0.15)' ,
+        stroke:_dashed
+    };
+
+    draw_props['MOVING'] = {
+        stroke:{fill:_dashed}
+    };
+
+
+    draw_props['HL'] = {
+        fill:_item_blend_hl
+    };
+
+    var dashed_image = null;
+
+    var diamond_style = {stroke:{width:1, fill:'rgba(0,0,0, 0.5)'}, stroke_first:true, fill:'rgb(102, 255, 51)'};
+    var diamond_offset = 12;
+    var diamond_size = 6;
     var item_count = 0;
 
     var item_id = 1;
 
+    function _draw(ctx) {
+        var props = {};
 
-    function Action(props) {
-        this.top = 0;
-        this.left = 0;
-        this.width = 120;
-        this.height = 75;
-        this.strength = 0;
-
-        this.name = 'untitiled';
-        this.new = true;
-        this.id = item_id++;
-        this.over = false;
-        this.moving = false;
-
-        this.draw_props = {
-            fill: _item_blend,
-            stroke:{
-            style:'rgb(0, 0, 0)', 
-            width:1
-            }
-        };
-        
-        this.hl = {
-        	fill: _item_blend_hl
-        	}
-
-        this.new_draw_props = {
-            fill:'rgba(255, 204, 0, 0.15)',
-            stroke:_dashed
-        };
-
-        this.moving_draw_props = {
-            stroke: {fill:_dashed}
-        };
-
-        this.over_draw_props = {
-            stroke:{
-                width:4,
-                fill:'rgb(255, 255, 0)'
-            } 
+        if (!dashed_image) {
+            _init_dashed_image(ctx);
         }
 
-        this.label_draw_props = {
-            fill:'rgb(0,0,0)',
-            font:'10pt, sans-serif, bold',
-            base:'bottom'
-        };
+        _.extend(props, this.draw_props(ctx));
 
-        this.selected_draw_props = {
-            fill: _selected_blend
-        };
+        flowgraph.draw.roundrect(ctx, this.dims(), props);
 
-        this.name = 'New Action ' + (++item_count);
-
-        if (props){
-            _.extend(this, props);
-        }
-        this.type='item';
+        ctx.save();
+        ctx.translate(this.get('left'), this.get('top'));
+        this.draw_label(ctx);
+        this.draw_diamond(ctx);
+        ctx.restore();
+        // this.draw_layer(ctx);
     }
 
-    Action.prototype = {
-        type: 'item',
+    var Action = Backbone.Model.extend({
+        type:'item',
 
-        _toString: _.template('ITEM id <%= id %> (<%= name %>, at <%= left %>, <%= top %>'),
+        initialize:function () {
+            if (!this.get('id')) {
+                this.set('id', item_id++);
+                this.set('name', item_id == 2 ? 'START' : 'Action ' + (item_id - 2));
+            }
+        },
 
-        to_s: function(){
-            var out = this._toString(this);
-         //   console.log('item to string: ', out);
-        },
-        
-        to_j: function (stringify){
-        	var out = {
-        	id: this.id, 
-        	name: this.name,
-        	top: this.top,
-        	left: this.left,
-        	style: this.style };
-        	
-        	if (stringify){
-        		return JSON.stringify(out);
-        	} else {
-        		return out;
-        	}
-        },
-        
-        equals: function(item){
-        	return item.id == this.id;
-        	},
+        defaults:{
+            top:0,
+            left:0,
+            width:120,
+            height:75,
+            strength:STRENGTH_NORMAL,
 
-        pa: function(){
-          return [this.left + this.width / 2, this.top + this.height /2]  ;
+            name:'untitled',
+            is_new:true,
+            is_over:false,
+            moving:false,
+
+            label_draw_props:{
+                fill:'rgb(0,0,0)',
+                font:'10pt, sans-serif, bold',
+                base:'bottom'
+            },
+
+            selected_draw_props:{
+                fill:_selected_blend
+            },
+
+            type:'item'
         },
-        
-        set_strength: function(v){
-        	v = parseInt(v);
-        	console.log('setting strength of', this.toString(), 'to', v);
-			if (v <= -10){
-				// optional;
-				this.strength = -10;
-				this.width=80;
-				this.height = 60;
-				this.draw_props.fill = 'rgb(225, 225, 255)';
-				this.draw_props.stroke.width = 0.5;
-			} else if (v < 10){
-				//standard
-				this.strength = 0;
-				this.width = 120;
-				this.height = 75;
-				this.draw_props.fill = _item_blend;
-				this.draw_props.stroke.width = 1;
-			} else {
-				// critical path
-				this.strength = 10;
-				this.width = 150;
-				this.height = 90;
-				this.draw_props.fill = 'rgb(125, 125, 255)';
-				this.draw_props.stroke.width = 3;
-			}
-        },
-        
-        center: function(){
-            var out = new flowgraph.util.Point(this.left + this.width / 2, this.top + this.height /2);
-          //  console.log('center of ', this.name, ':', out.toString());
+
+        _toString:_.template('ITEM id <%= id %> (<%= name %>, at <%= left %>, <%= top %>)'),
+
+        toString:function () {
+            var out = this._toString(this.toJSON());
+            if (this.get('is_new')) {
+                out += ' new ';
+            }
+            if (this.get('is_selected')) {
+                out += ' sel ';
+            }
+
+            if (this.get('is_over')) {
+                out += ' over ';
+            }
+
             return out;
         },
 
-        draw:function (ctx) {
-            var props = {};
-
-            if (!dashed_image) {
-                _init_dashed_image(ctx);
-            }
-
-            _.extend(props, this.draw_props);
-
-            if (this.new) {
-                _.extend(props, this.new_draw_props);
-            }
-
-            if (this.over) {
-                _.extend(props, this.over_draw_props);
-            }
-
-            if (this.selected){
-                _.extend(props, this.selected_draw_props);
-            }
-
-            if (this.moving){
-            	_.extend(props, this.moving_draw_props);
-            }
-
-            flowgraph.draw.roundrect(ctx, this.dims(), props);
-
-            if (!this.selected){
-                flowgraph.draw.roundrect(ctx, this.dims(), this.hl);
-            }
-
-            ctx.save();
-            ctx.translate(this.left, this.top);
-            this.draw_label(ctx);
-            this.draw_diamond(ctx);
-            ctx.restore();
-            // this.draw_layer(ctx);
+        equals:function (item) {
+            return item.id == this.id;
         },
+
+        pa:function () {
+            return [this.get('left') + this.get('width') / 2, this.get('top') + this.get('height') / 2];
+        },
+
+        set_strength:function (v) {
+            v = parseInt(v);
+            console.log('setting strength of', this.toString(), 'to', v);
+            if (v <= -10) {
+                // optional;
+                this.set('strength', -10);
+            } else if (v < 10) {
+                //standard
+                this.set('strength', 0);
+            } else {
+                // critical path
+                this.set('strength', 10);
+            }
+        },
+
+        center:function () {
+            var out = new flowgraph.util.Point(this.get('left') + this.get('width') / 2, this.get('top') + this.get('height') / 2);
+            //  console.log('center of ', this.get('name'), ':', out.toString());
+            return out;
+        },
+
+        draw:_draw,
 
         label_pt:[10, 20],
 
         draw_label:function (ctx) {
             var txt_props = {};
-            _.extend(txt_props, this.label_draw_props);
-            flowgraph.draw.text(ctx, this.name, this.label_pt, txt_props, true);
+            _.extend(txt_props, this.get('label_draw_props'));
+            flowgraph.draw.text(ctx, this.get('name'), this.label_pt, txt_props, true);
         },
 
         draw_layer:function (ctx) {
@@ -255,71 +272,100 @@ flowgraph.sprites.Action = function () {
             var txt_props = {};
             var pt = this.label_pt;
             pt[1] += 20;
-            _.extend(txt_props, this.label_draw_props, {fill:'rgb(255, 0, 0)'});
+            _.extend(txt_props, this.get('label_draw_props'), {fill:'rgb(255, 0, 0)'});
             flowgraph.draw.text(ctx, this.layer_index, pt, txt_props);
 
         },
-        diamond_style:{stroke:{width:1, fill:'rgb(0,0,0)'}, fill:'rgb(102, 255, 51)'},
-        diamond_offset:12,
-        diamond_size:6,
+
         draw_diamond:function (ctx) {
             ctx.save();
 
-            ctx.translate(this.width - this.diamond_offset, this.diamond_offset);
+            ctx.translate(this.get('width') - diamond_offset, diamond_offset);
 
             ctx.beginPath();
-            ctx.moveTo(this.diamond_size, 0);
-            ctx.lineTo(0, this.diamond_size);
-            ctx.lineTo(-this.diamond_size, 0);
-            ctx.lineTo(0, -this.diamond_size);
-            ctx.lineTo(this.diamond_size, 0);
+            ctx.moveTo(diamond_size, 0);
+            ctx.lineTo(0, diamond_size);
+            ctx.lineTo(-diamond_size, 0);
+            ctx.lineTo(0, -diamond_size);
+            ctx.lineTo(diamond_size, 0);
             ctx.closePath();
-            flowgraph.draw.paint(ctx, this.diamond_style, true);
+            flowgraph.draw.paint(ctx, diamond_style, true);
 
             ctx.restore();
         },
 
+        draw_props:function (ctx) {
+            var strength = this.get('strength');
+            var out = {};
+
+            _.extend(out, draw_props[strength]);
+
+            if (this.get('is_selected')) {
+                _.extend(out, draw_props['SELECTED']);
+            }
+
+            if (this.get('is_new')) {
+                _.extend(out, draw_props['NEW']);
+            } else {
+                console.log('not over', this.get('id'));
+            }
+
+            if (this.get('is_over')) {
+                _.extend(out, draw_props['OVER']);
+            } else {
+                console.log('not over', this.get('id'));
+            }
+
+            if (this.get('is_moving')) {
+                _.extend(out, draw_props['MOVING']);
+            } else {
+                console.log('not over', this.get('id'));
+            }
+
+            return out;
+        },
+
         dims:function (relative) {
             if (relative) {
-                return [0, 0, this.width, this.height];
+                return [0, 0, this.get('width'), this.get('height')];
             } else {
-                return [this.left, this.top, this.width, this.height];
+                return [this.get('left'), this.get('top'), this.get('width'), this.get('height')];
             }
         },
 
         diamond_dims:function (relative) {
             var dims = [
-                this.width - this.diamond_offset - this.diamond_size, 0,
-                this.width, this.diamond_offset + this.diamond_size
+                this.get('width') - diamond_offset - diamond_size, 0,
+                this.get('width'), diamond_offset + diamond_size
             ];
 
             if (!relative) {
-                dims[0] += this.left;
-                dims[2] += this.left;
-                dims[1] += this.top;
-                dims[3] += this.top;
+                dims[0] += this.get('left');
+                dims[2] += this.get('left');
+                dims[1] += this.get('top');
+                dims[3] += this.get('top');
             }
 
             return dims;
         },
 
         get_right:function () {
-            return this.left + this.width;
+            return this.get('left') + this.get('width');
         },
 
         get_bottom:function () {
-            return this.top + this.height;
+            return this.get('top') + this.get('height');
         },
 
         mouse_over:function () {
-            return flowgraph.mouse.in_rect(this.left, this.top, this.get_right(), this.get_bottom());
+            return flowgraph.mouse.in_rect(this.get('left'), this.get('top'), this.get_right(), this.get_bottom());
         },
 
         mouse_click:function () {
             if (flowgraph.mode == 'select') {
 
                 if (this.mouse_over()) {
-                    console.log('CLICKED ON ', this.name);
+                    console.log('CLICKED ON ', this.get('name'));
                     if (flowgraph.mouse.in_rect.apply(flowgraph.mouse, this.diamond_dims())) {
                         show_item_form(this);
                     }
@@ -330,12 +376,14 @@ flowgraph.sprites.Action = function () {
             } else {
                 return true;
             }
-        },
-
-        toString: function(){
-            return '(' + this.id + '): ' + this.name;
         }
-    }
+    });
+
+    var Action_model = Backbone.Collection.extend({
+        model:Action
+    });
+
+    flowgraph.collections.actions = new Action_model();
 
     return Action;
 }();

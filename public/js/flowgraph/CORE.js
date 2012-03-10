@@ -17,10 +17,7 @@ var flowgraph = {
 
     util: {},
 
-    model:{
-        nodes:[],
-
-        links:[]
+    collections:{
     },
 
     layer: function(name){

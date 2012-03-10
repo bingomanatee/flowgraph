@@ -44,7 +44,7 @@ flowgraph.Stack = function () {
             var out = [];
             this.items().forEach(function (s) {
              //   console.log("foreach stack: ", s);
-                out.push(s.to_s());
+                out.push(s.toString());
             });
 
             return out.join("\n");
@@ -76,9 +76,14 @@ flowgraph.Stack = function () {
             if (!item) {
                 throw new Error('Attempt to add nothing');
             }
-            if (!item.id) {
+
+            var id;
+            if (item.id) {
+                id = item.id;
+            } else if (!(id = item.get('id'))){
                 throw new Error('Attempt to add unidd item');
             }
+
             if (arguments.length < 2) {
                 index = this.max_index() + 1;
             }

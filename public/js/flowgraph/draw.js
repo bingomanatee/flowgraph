@@ -113,13 +113,13 @@ flowgraph.draw = function () {
 				ctx.shadowOffsetX = -2;
 				ctx.shadowOffsetY = -4;
 				ctx.shadowBlur = 6.0;
-				ctx.shadowColor = 'rgba(0, 0,0, 0.5)';
+				ctx.shadowColor = 'rgba(0, 0,0, 0.25)';
 				ctx.fill();
 				
 				ctx.globalCompositeOperation = 'lighter';
 				
 				ctx.shadowBlur =3.0;
-				ctx.shadowColor = 'rgb(255, 255, 255)';
+				ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
 				ctx.shadowOffsetX = 0;
 				ctx.shadowOffsetY = 0;
 				ctx.fill();
@@ -131,8 +131,6 @@ flowgraph.draw = function () {
             if (no_state){
                 throw new error('Roundrect does not linke noState;')
             } else {
-
-                
                 ctx.save();
 
                 ctx.beginPath();

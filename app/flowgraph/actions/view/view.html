@@ -4,9 +4,9 @@
 
 <link rel="stylesheet" type="text/css" href="/css/flowgraph.css"/>
 
-<table id="fg_info">
+<table id="fg_info" style="height: 100px; overflow: hidden; display: none">
     <tr>
-        <th>Mode</th>
+        <th style="height: 15px">Mode</th>
         <th>New</th>
         <th>Selected</th>
         <th>Moving</th>
@@ -48,9 +48,9 @@
             <div class="item">
                 <label>Strength</label>
                 <select id="item_form_strength">
-                    <option value="-10">Optional Item</option>
-                    <option value="0" selected="selected">Standard Item</option>
-                    <option value="10">Critical Path Item</option>
+                    <option value="minor">Minot Item</option>
+                    <option value="normal" selected="selected">Standard Item</option>
+                    <option value="major">Critical Path Item</option>
                 </select>
             </div>
 
@@ -123,6 +123,12 @@
 <br clear="all"/>
 
 <script language="JavaScript" src="/js/underscore-min.js">
+</script>
+
+<script language="JavaScript" src="/js/libs/backbone/backbone.js">
+</script>
+
+<script language="JavaScript" src="/js/libs/backbone/backbone.localStorage.js">
 </script>
 
 <script language="JavaScript" src="/js/flowgraph/CORE.js">

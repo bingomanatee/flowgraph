@@ -4,35 +4,50 @@ flowgraph.util.Point = function () {
         this.x = x;
         this.y = y;
     }
-    
-    Point.snap_angle(a, inc){
-    	var snap_a = a;
-    	var snap_dist = Point.angle_dist(a, 0);
+
+    Point.snap_angle = function (a, inc, start) {
+        if (!start) {
+            start = 0;
+        }
+        start = start % inc;
+
+        var snap_a = start;
+        var snap_dist = Point.angle_dist(start, a);
+
+        for (var sa = start; sa < Math.PI * 2; sa += inc) {
+            var dist = Point.angle_dist(sa, a);
+            if (dist < snap_dist) {
+                snap_dist = dist;
+                snap_a = sa;
+            }
+        }
+        return snap_a;
     }
 
-	Point.angle_dist(a, b){
-		var dist = Math.abs(a - b);
-		if (dist > Math.PI){
-			dist = (2 * Math.PI) - dist; 
-		}
-	}
-	
-	Point.angle_range = function (a) {
-            var c = Math.PI * 2;
-            while (a < 0) {
-                a += c;
-            }
-            while (a > c) {
-                a -= c;
-            }
-            return a;
+    Point.angle_dist = function (a, b) {
+        var dist = Math.abs(a - b);
+        if (dist > Math.PI) {
+            dist = (2 * Math.PI) - dist;
         }
+        return dist;
+    }
+
+    Point.angle_range = function (a) {
+        var c = Math.PI * 2;
+        while (a < 0) {
+            a += c;
+        }
+        while (a > c) {
+            a -= c;
+        }
+        return a;
+    }
 
     Point.prototype = {
 
         rel_angle:function (p) {
             if (this.equals(p)) {
-            //    console.log('equal points ', this.toString(), 'and', p.toString(), 'compared');
+                //    console.log('equal points ', this.toString(), 'and', p.toString(), 'compared');
                 return 0;
             }
 
@@ -50,12 +65,12 @@ flowgraph.util.Point = function () {
             return [this.x, this.y];
         },
 
-        vector: function(a, m, relative){
-            if (!m){
+        vector:function (a, m, relative) {
+            if (!m) {
                 m = 1;
             }
             var v = new Point(Math.cos(a) * m, Math.sin(a) * m);
-            if (relative){
+            if (relative) {
                 return this.add(v);
             } else {
                 return v;
@@ -110,7 +125,7 @@ flowgraph.util.Point = function () {
         add:function (p, y) {
             if (arguments.length > 1) {
                 var out = new Point(this.x + p, this.y + y);
-          //      console.log('offsetting', this.toString(), 'by ', p, y, out.toString());
+                //      console.log('offsetting', this.toString(), 'by ', p, y, out.toString());
                 return out;
             }
 
