@@ -30,12 +30,13 @@
     </tr>
 </table>
 <button id="save_drawing" onclick="flowgraph.save()">Save Drawing</button>
+        <span id="save_done" style="border: 1px solid black; color: white; background-color: #f77c04; display: none"></span>
 <div id="canvas_frame">
     <div id="canvas_inner">
 
         <div id="item_form" class="edit_form" style="display: none">
             <h3>Edit Item</h3>
-            <span class="x" onclick="$('#item_form').close()">X</span>
+            <span class="x" onclick="$('#item_form').hide()">X</span>
 
             <div class="item">
                 <label>ID</label>
@@ -48,9 +49,9 @@
             <div class="item">
                 <label>Strength</label>
                 <select id="item_form_strength">
-                    <option value="minor">Minot Item</option>
+                    <option value="minor">Minor Item</option>
                     <option value="normal" selected="selected">Standard Item</option>
-                    <option value="major">Critical Path Item</option>
+                    <option value="major">Major Path Item</option>
                 </select>
             </div>
 
@@ -143,8 +144,8 @@
 <script language="JavaScript" src="/js/flowgraph/util/link_exists.js">
 </script>
 
-<script language="JavaScript" src="/js/flowgraph/util/Layer.js">
-</script>
+<!-- script language="JavaScript" src="/js/flowgraph/util/Layer.js">
+</script -->
 
 <script language="JavaScript" src="/js/flowgraph/sprites/Image.js">
 </script>
@@ -153,6 +154,9 @@
 </script>
 
 <script language="JavaScript" src="/js/flowgraph/sprites/Toolbar.js">
+</script>
+
+<script language="JavaScript" src="/js/flowgraph/sprites/action_fills.js">
 </script>
 
 <script language="JavaScript" src="/js/flowgraph/sprites/Action.js">
@@ -167,8 +171,8 @@
 <script language="JavaScript" src="/js/flowgraph/mouse.js">
 </script>
 
-<script language="JavaScript" src="/js/flowgraph/util/test.js">
-</script>
+<!-- script language="JavaScript" src="/js/flowgraph/util/test.js">
+</script -->
 
 <link rel="stylesheet" type="text/css" href="/js/libs/qunit/qunit.css"/>
 
@@ -176,4 +180,8 @@
 
 
 <script language="JavaScript" defer="defer" src="/js/flowgraph/init.js">
+</script>
+
+<script language="JavaScript" defer="defer">
+    flowgraph.project_id = '<%= project._id %>';
 </script>

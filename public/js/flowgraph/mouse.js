@@ -8,6 +8,12 @@ flowgraph.mouse = function () {
         return e.pageY - flowgraph.jcanvas.offset().top;
     }
 
+    function _find_click(item){
+        if (item.mouse_click && (!item.mouse_click())){
+            return item;
+        }
+        return false;
+    }
 
     var mouse = {
 
@@ -20,15 +26,7 @@ flowgraph.mouse = function () {
         },
 
         click:function () {
-            var layers = flowgraph.layers.items(true);
-
-            for (var l = 0; l < layers.length; ++l) {
-                var layer = layers[l];
-                if (layer.mouse_click()) {
-                  //  console.log('click detected');
-                    return;
-                }
-            }
+            flowgraph.layer_items_seek(_find_click);
         },
 
         events:{
@@ -52,9 +50,10 @@ flowgraph.mouse = function () {
 
             click:function (e) {
                 if (!mouse.events._on_click) {
-                  //  console.log('no clicker; mouse click');
+                    console.log('no clicker; try general mouse click');
                     mouse.click();
                 } else if (mouse.events._on_click()) {
+                    console.log('no click interception; try general mouse click')
                     mouse.click();
                 } else {
                   //  console.log('clicker intercepted: ', mouse.events._on_click.toString() );

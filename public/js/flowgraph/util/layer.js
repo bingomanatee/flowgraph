@@ -9,7 +9,7 @@ flowgraph.Layer = function () {
     }
 
     function Layer(id) {
-        this.id = id;
+        this._id = id;
         this.sprites = new flowgraph.Stack(this.id);
     }
 

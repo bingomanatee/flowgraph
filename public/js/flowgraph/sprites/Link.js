@@ -6,7 +6,7 @@ function show_link_form(link) {
     f.css('top', c.y + 'px');
     f.css('left', c.x + 'px');
     $('#link_form_link_label').val(link.label());
-    $('#link_form_link_id').html(link.get('id'));
+    $('#link_form_link_id').html(link.get('_id'));
     $('#link_form_from_name').html(link.get('from_node').get('name'));
     $('#link_form_to_name').html(link.get('to_node').get('name'));
     $('#link_form_style').val(link.get('style'));
@@ -33,6 +33,7 @@ flowgraph.sprites.Link = function () {
 
     var link_id = 0;
     var CENTER_RAD = 15
+    var stack_order = 0;
 
     var Link = Backbone.Model.extend({
         defaults:{
@@ -84,17 +85,46 @@ flowgraph.sprites.Link = function () {
             type:'link'
         },
 
+        idAttribute:"_id",
+
         initialize:function () {
-            if (!this.get('id')) {
-                this.set('id', link_id++);
+            if (!this.get('_id')) {
+                this.set('_id', link_id++);
+            }
+            if (!this.get('stack_order')) {
+                this.set('stack_order', ++stack_order);
             }
         },
 
-        _toString:_.template('LINK id <%= id %> (<%= manual_label %>), style <%= style %> from <%= from_node.toString() %>' +
-            'to <%= to_node.toString() %>)'),
+        _toString:_.template('LINK id <%= _id %> (<%= label %>), style <%= style %> from <%= from_node_name %>' +
+            'to <%= to_node_name %>)'),
 
         toString:function () {
             return this._toString(this.toJSON());
+        },
+
+        equals: function(l){
+            return l.get('_id') == this.get('_id');
+        },
+
+        toJSON:function () {
+            return {
+                label:this.label(),
+                _id:this.get('_id'),
+                from_node:this.get('from_node').get('_id'),
+                from_node_name:this.from_node_name(),
+                to_node_name:this.to_node_name(),
+                style:this.get('style'),
+                to_node:this.get('to_node').get('_id')
+            };
+        },
+
+        from_node_name:function () {
+            this.get('from_node').get('name');
+        },
+
+        to_node_name:function () {
+            this.get('to_node').get('name');
         },
 
         label:function () {

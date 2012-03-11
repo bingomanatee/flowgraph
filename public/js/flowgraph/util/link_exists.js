@@ -2,7 +2,7 @@
 
 flowgraph.util.link_exists = function(n1, n2){
 
-    var link_layer = flowgraph.layer('links');
+    var link_layer = flowgraph.get_links();
 
     var exists = false;
 

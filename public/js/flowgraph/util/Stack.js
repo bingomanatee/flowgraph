@@ -1,7 +1,7 @@
 flowgraph.Stack = function () {
 
-    function Stack(id) {
-        this.id = id;
+    function Stack(_id) {
+        this._id = _id;
         this.ordered = null;
         this.reversed = null;
         this.stack = [];
@@ -16,7 +16,7 @@ flowgraph.Stack = function () {
     }
 
     function _id(i) {
-        return i.id;
+        return i._id;
     }
 
     function _order(stack) {
@@ -78,9 +78,9 @@ flowgraph.Stack = function () {
             }
 
             var id;
-            if (item.id) {
-                id = item.id;
-            } else if (!(id = item.get('id'))){
+            if (item._id) {
+                id = item._id;
+            } else if (!(id = item.get('_id'))){
                 throw new Error('Attempt to add unidd item');
             }
 
@@ -96,7 +96,7 @@ flowgraph.Stack = function () {
 
         get:function (id) {
             for (var i = 0; i < this.stack.length; ++i) {
-                if (this.stack[i].item.id == id) {
+                if (this.stack[i].item.get('_id') == id) {
                     return this.stack[i].item;
                 }
             }

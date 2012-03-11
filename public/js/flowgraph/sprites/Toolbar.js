@@ -128,7 +128,7 @@ flowgraph.sprites.Toolbar = function () {
             for (var i = 0; i < this.tiles.length; ++i) {
                 var tile = this.tiles[i];
                 if (tile.mouse_over()) {
-                    console.log('tile clicked: ', tile.id);
+                    console.log('tile clicked: ', tile._id);
                     this.select_tool(tile);
                     return true;
                 }
@@ -173,7 +173,7 @@ flowgraph.sprites.Toolbar = function () {
                 this.selected_tile = tile;
             }
             if (this.selected_tile) {
-                console.log('--------- SELECTED TOOL: ', this.selected_tile.id, ' -----------');
+                console.log('--------- SELECTED TOOL: ', this.selected_tile._id, ' -----------');
                 this.selected_tile.selected = true;
                 if (this.selected_tile.activate) {
                     this.selected_tile.activate();
