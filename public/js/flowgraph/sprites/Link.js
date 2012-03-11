@@ -111,20 +111,20 @@ flowgraph.sprites.Link = function () {
             return {
                 label:this.label(),
                 _id:this.get('_id'),
-                from_node:this.get('from_node').get('_id'),
+                from_node: parseInt(this.get('from_node').get('_id')),
                 from_node_name:this.from_node_name(),
                 to_node_name:this.to_node_name(),
                 style:this.get('style'),
-                to_node:this.get('to_node').get('_id')
+                to_node:parseInt(this.get('to_node').get('_id'))
             };
         },
 
         from_node_name:function () {
-            this.get('from_node').get('name');
+            return this.get('from_node').get('name');
         },
 
         to_node_name:function () {
-            this.get('to_node').get('name');
+            return this.get('to_node').get('name');
         },
 
         label:function () {

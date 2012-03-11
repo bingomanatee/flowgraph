@@ -159,7 +159,7 @@ flowgraph.sprites.Toolbar = function () {
             this.selected_tile = null;
             if (_.isString(tile)) {
                 for (var i = 0; i < this.tiles.length; ++i) {
-                    if (this.tiles[i].id == tile) {
+                    if (this.tiles[i]._id == tile) {
                         this.selected_tile = this.tiles[i];
                     }
                 }

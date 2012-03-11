@@ -141,6 +141,17 @@ var flowgraph = function () {
 
         get_links: function(){
             return this.collections.links.sortBy(_sod);
+        },
+
+        get_tool: function(name){
+            var out = false;
+            flowgraph.layers.tools.forEach(function(t){
+                if ( t._id == name){
+                    out = t;
+                }
+            });
+
+            return out;
         }
     };
 } ();

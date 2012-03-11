@@ -144,6 +144,9 @@
 <script language="JavaScript" src="/js/flowgraph/util/link_exists.js">
 </script>
 
+<script language="JavaScript" src="/js/flowgraph/util/loader.js">
+</script>
+
 <!-- script language="JavaScript" src="/js/flowgraph/util/Layer.js">
 </script -->
 
@@ -184,4 +187,7 @@
 
 <script language="JavaScript" defer="defer">
     flowgraph.project_id = '<%= project._id %>';
+    flowgraph.load(
+            <%- JSON.stringify(project) %>
+    );
 </script>

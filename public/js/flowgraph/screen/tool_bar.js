@@ -215,11 +215,10 @@ flowgraph.init_events.push(function () {
             flowgraph.collections.links.add(link);
         }
         new_action = null;
-        var toolbar = flowgraph.get_layer_item('tools', 'toolbar');
+        var toolbar = flowgraph.get_tool('toolbar');
 
         toolbar.select_tool('select');
 
-        console.log('is_new node set to null');
         return false;
     }
 

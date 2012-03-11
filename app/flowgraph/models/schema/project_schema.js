@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 
 var Action_schema = new mongoose.Schema({
+    _id: Number,
     top: Number,
     left: Number,
     style: String,
@@ -11,9 +12,10 @@ var Action_schema = new mongoose.Schema({
 });
 
 var link_schema = new mongoose.Schema({
+    _id: Number,
     style: Number,
-    from_id: Number,
-    to_id: Number,
+    from_node: Number,
+    to_node: Number,
     stack_order: Number,
     manual_label: String
 });

@@ -90,7 +90,7 @@ flowgraph.sprites.Action = function () {
             strength:'normal',
 
             name:'untitled',
-            is_new:true,
+            is_new:false,
             is_over:false,
             moving:false,
 
