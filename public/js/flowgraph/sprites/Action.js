@@ -33,7 +33,7 @@ flowgraph.sprites.Action = function () {
 
     function _draw(ctx) {
         var props = {};
-        if (!dash_image_loaded){
+        if (!dash_image_loaded) {
             flowgraph.util.action_fills.init_dashed_image(ctx);
             dash_image_loaded = true;
         }
@@ -59,7 +59,13 @@ flowgraph.sprites.Action = function () {
             _.extend(props, af.MOVING);
         }
 
-        flowgraph.draw.roundrect(ctx, this.dims(), props);
+        switch (strength) {
+            case 'branch':
+                flowgraph.draw.diamond(ctx, this.dims(), props);
+                break;
+            default:
+                flowgraph.draw.roundrect(ctx, this.dims(), props);
+        }
 
         ctx.save();
         ctx.translate(this.get('left'), this.get('top'));
@@ -70,13 +76,13 @@ flowgraph.sprites.Action = function () {
 
     var Action = Backbone.Model.extend({
         type:'item',
-        idAttribute: "_id",
+        idAttribute:"_id",
         initialize:function () {
             if (!this.get('_id')) {
-                this.set('_id', item_id++);
-                this.set('name', item_id == 2 ? 'START' : 'Action ' + (item_id - 2));
+                this.set('_id', flowgraph.next_action_id());
+                this.set('name', this.get('_id') == 1 ? 'START' : 'Action ' + this.get('_id'));
             }
-            if (!this.get('stack_order')){
+            if (!this.get('stack_order')) {
                 this.set('stack_order', ++stack_order);
             }
         },
@@ -84,7 +90,7 @@ flowgraph.sprites.Action = function () {
         defaults:{
             top:0,
             left:0,
-            stack_order: 0,
+            stack_order:0,
             width:120,
             height:75,
             strength:'normal',
@@ -97,7 +103,7 @@ flowgraph.sprites.Action = function () {
             type:'item'
         },
 
-        _toString:_.template('ITEM id <%= _id %> (<%= name %>, at <%= left %>, <%= top %>)'),
+        _toString:_.template('ACTION <%= strength %> id <%= _id %>  (<%= name %>, at <%= left %>, <%= top %>)'),
 
         toString:function () {
             var out = this._toString(this.toJSON());
@@ -113,14 +119,14 @@ flowgraph.sprites.Action = function () {
             return out;
         },
 
-        toJSON: function(){
+        toJSON:function () {
             return {
-                name: this.get('name'),
-                _id: this.get('_id'),
-                left: this.get('left'),
-                top: this.get('top'),
-                style: this.get('style'),
-                strength: this.get('strength')
+                name:this.get('name'),
+                _id:this.get('_id'),
+                left:this.get('left'),
+                top:this.get('top'),
+                style:this.get('style'),
+                strength:this.get('strength')
             }
         },
 
@@ -144,18 +150,27 @@ flowgraph.sprites.Action = function () {
 
         draw:_draw,
 
-        label_pt:[10, 20],
+        label_pt: function(){
+            switch (this.get('strength')){
+                case 'branch':
+                    return [this.get('width')/2, parseInt(this.get('height'))/2 + 5];
+                    break;
+                default:
+                    return [10, 20];
+            }
+        },
 
         draw_label:function (ctx) {
+            var strength = this.get('strength');
             var txt_props = {};
-            _.extend(txt_props, flowgraph.util.action_fills.label_draw_props);
-            flowgraph.draw.text(ctx, this.get('name'), this.label_pt, txt_props, true);
+            _.extend(txt_props, flowgraph.util.action_fills.label_draw_props[strength]);
+            flowgraph.draw.text(ctx, this.get('name'), this.label_pt(), txt_props, true);
         },
 
         draw_layer:function (ctx) {
 
             var txt_props = {};
-            var pt = this.label_pt;
+            var pt = this.label_pt();
             pt[1] += 20;
             _.extend(txt_props, flowgraph.util.action_fills.label_draw_props, {fill:'rgb(255, 0, 0)'});
             flowgraph.draw.text(ctx, this.layer_index, pt, txt_props);

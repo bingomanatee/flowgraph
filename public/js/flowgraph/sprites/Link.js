@@ -31,7 +31,6 @@ function update_show_link_form() {
 
 flowgraph.sprites.Link = function () {
 
-    var link_id = 0;
     var CENTER_RAD = 15
     var stack_order = 0;
 
@@ -89,7 +88,7 @@ flowgraph.sprites.Link = function () {
 
         initialize:function () {
             if (!this.get('_id')) {
-                this.set('_id', link_id++);
+                this.set('_id', flowgraph.next_link_id());
             }
             if (!this.get('stack_order')) {
                 this.set('stack_order', ++stack_order);

@@ -1,9 +1,9 @@
 var flowgraph = function () {
 
-    function _sod(item){
-        if (item instanceof Backbone.Model){
+    function _sod(item) {
+        if (item instanceof Backbone.Model) {
             return item.get('sort_order') * -1;
-        } else if (item.hasOwnProperty('sort_order')){
+        } else if (item.hasOwnProperty('sort_order')) {
             return item.sort_order;
         } else {
             return 0;
@@ -135,24 +135,40 @@ var flowgraph = function () {
             }, 5000);
         },
 
-        get_actions: function(){
+        get_actions:function () {
             return this.collections.actions.sortBy(_sod);
         },
 
-        get_links: function(){
+        get_links:function () {
             return this.collections.links.sortBy(_sod);
         },
 
-        get_tool: function(name){
+        get_tool:function (name) {
             var out = false;
-            flowgraph.layers.tools.forEach(function(t){
-                if ( t._id == name){
+            flowgraph.layers.tools.forEach(function (t) {
+                if (t._id == name) {
                     out = t;
                 }
             });
 
             return out;
+        },
+
+        next_action_id:function () {
+            var next = 0;
+            this.get_actions().forEach(function (a) {
+                next = Math.max(next, parseInt(a.get('_id')));
+            });
+            return next + 1;
+        },
+
+        next_link_id:function () {
+            var next = 0;
+            this.get_links().forEach(function (a) {
+                next = Math.max(next, parseInt(a.get('_id')));
+            });
+            return next + 1;
         }
     };
-} ();
+}();
 

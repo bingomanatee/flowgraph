@@ -84,7 +84,11 @@ flowgraph.draw = function () {
                 ctx.createRadialGradient.apply(ctx, coords) :
                 ctx.createLinearGradient.apply(ctx, coords);
             stops.forEach(function (stop) {
-                g.addColorStop(stop.stop, stop.color);
+                try {
+                    g.addColorStop(stop.stop, stop.color);
+                } catch (err){
+                    console.log('cannot add stop ', stop);
+                }
             });
 
             return g;
@@ -164,6 +168,33 @@ flowgraph.draw = function () {
                 ctx.restore();
 
             }
+        },
+
+        diamond: function(ctx, dims, props, no_state){
+            ctx.translate(dims[0], dims[1]);
+            if (!no_state){
+                ctx.save();
+            }
+
+            var width = dims[2];
+            var height = dims[3];
+            var w2 = width/2;
+            var h2 = height/2;
+
+            ctx.beginPath();
+            ctx.moveTo(w2, 0);
+            ctx.lineTo(width, h2);
+            ctx.lineTo(w2, height);
+            ctx.lineTo(0, h2);
+            ctx.lineTo(w2, 0);
+            ctx.closePath();
+
+            this.paint(ctx, props);
+
+            if (!no_state){
+                ctx.restore();
+            }
+            ctx.translate(-dims[0], -dims[1]);
         },
 
         _round_rect_bounds_path:function (ctx, dims, props) {
