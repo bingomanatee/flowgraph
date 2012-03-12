@@ -4,6 +4,10 @@ flowgraph.util.action_fills = function () {
 
     var _dash_img = null;
 
+    var _edit_icon = {fill:'rgb(102, 102, 0)'};
+
+    var _edit_icon_img = null;
+
     var WIDTH = 120;
     var HEIGHT = 75;
 
@@ -21,6 +25,7 @@ flowgraph.util.action_fills = function () {
     var WHITE_A80 = 'rgba(255, 255, 255, 0.8)';
     var WHITE_A20 = 'rgba(255, 255, 255, 0.2)';
     var WHITE_A0 = 'rgba(255, 255, 255, 0.0)';
+    var YELLOW = 'rgb(225, 255, 51)';
 
     var LT_PURPLE = '#febaff';
     var PURPLE = '#fc00ff';
@@ -98,19 +103,41 @@ flowgraph.util.action_fills = function () {
         return flowgraph.draw.grad(ctx, stops, coords, 'linear');
     }
 
+    function _start_blend(ctx, props) {
+        var stops = [
+            {stop:0, color:WHITE},
+            {stop:1, color:BLACK}
+        ];
+
+        var coords = [-10, -20, 0, -20, -20, 50];
+        console.log('start blend: ', coords);
+        return flowgraph.draw.grad(ctx, stops, coords, 'radial');
+    }
+
     var _default_label_props = {
-        fill:'rgb(0,0,0)',
+        fill:BLACK,
         font:'bold 14px sans-serif',
         base:'bottom'
     };
     var _branch_label_props = {
-        fill:'rgb(0,0,0)',
+        fill:BLACK,
         font:'bold 16px sans-serif',
         base:'bottom',
-        align: 'center'
+        align:'center'
     };
 
-    return {
+    var _start_label_props = {
+        fill:WHITE,
+        font:'bold 20px sans-serif',
+        base:'bottom',
+        align:'center'
+    }
+
+    function _on_ei_load() {
+        fills.icons.edit.image = _edit_icon_img;
+    }
+
+    var fills = {
 
         init_dashed_image:function (ctx) {
             _dash_img = new Image();
@@ -122,12 +149,21 @@ flowgraph.util.action_fills = function () {
             return true;
         },
 
+        init_edit_image:function (ctx) {
+            _edit_icon_img = new Image();
+            _edit_icon_img.onload = _on_ei_load;
+
+            _edit_icon_img.src = 'http://localhost:5103/js/flowgraph/sprites/icons/edit.png';
+            return true;
+        },
+
         diamond_style:{stroke:{width:1, fill:'rgba(0,0,0, 0.5)'}, stroke_first:true, fill:'rgb(102, 255, 51)'},
 
         label_draw_props:{
             major:_default_label_props,
             normal:_default_label_props,
             minor:_default_label_props,
+            start:_start_label_props,
             branch:_branch_label_props
         },
 
@@ -153,10 +189,22 @@ flowgraph.util.action_fills = function () {
                 }
             },
 
+            start:{
+                fill:_start_blend, stroke_first:true, stroke:{
+                    fill:YELLOW, width:5
+                }
+            },
+
             branch:{
                 fill:_branch_blend, stroke_first:true, stroke:{
                     fill:BLACK, width:1
                 }
+            }
+        },
+
+        icons:{
+            edit:{
+                image:false
             }
         },
 
@@ -179,5 +227,7 @@ flowgraph.util.action_fills = function () {
                 fill:_dashed
             }
         }
-    }
+    };
+
+    return fills;
 }()

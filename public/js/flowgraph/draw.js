@@ -71,10 +71,14 @@ flowgraph.draw = function () {
                 var ll = flowgraph.layer('links');
 
                 var state = "<pre>ACTIONS: \n"
-                    actions.forEach(function(i){ state += i.toString() + "\n"; })
-                    state += "\nLINKS: \n";
-                    links.forEach(function(i){ state += i.toString() + "\n"; });
-                    state += '</pre>';
+                actions.forEach(function (i) {
+                    state += i.toString() + "\n";
+                })
+                state += "\nLINKS: \n";
+                links.forEach(function (i) {
+                    state += i.toString() + "\n";
+                });
+                state += '</pre>';
                 $('#sprite_log').html(state);
             }
         },
@@ -86,7 +90,7 @@ flowgraph.draw = function () {
             stops.forEach(function (stop) {
                 try {
                     g.addColorStop(stop.stop, stop.color);
-                } catch (err){
+                } catch (err) {
                     console.log('cannot add stop ', stop);
                 }
             });
@@ -170,16 +174,40 @@ flowgraph.draw = function () {
             }
         },
 
-        diamond: function(ctx, dims, props, no_state){
+        circle_cr:function (ctx, dims, rad, props, no_state) {
             ctx.translate(dims[0], dims[1]);
-            if (!no_state){
+            if (!no_state) {
                 ctx.save();
             }
 
             var width = dims[2];
             var height = dims[3];
-            var w2 = width/2;
-            var h2 = height/2;
+            var w2 = width / 2;
+            var h2 = height / 2;
+
+            ctx.beginPath();
+            ctx.arc(0, 0, rad, 0, Math.PI * 2, true);
+            ctx.closePath();
+
+            this.paint(ctx, props);
+
+            if (!no_state) {
+                ctx.restore();
+            }
+            ctx.translate(-dims[0],- dims[1]);
+
+        },
+
+        diamond:function (ctx, dims, props, no_state) {
+            ctx.translate(dims[0], dims[1]);
+            if (!no_state) {
+                ctx.save();
+            }
+
+            var width = dims[2];
+            var height = dims[3];
+            var w2 = width / 2;
+            var h2 = height / 2;
 
             ctx.beginPath();
             ctx.moveTo(w2, 0);
@@ -191,7 +219,7 @@ flowgraph.draw = function () {
 
             this.paint(ctx, props);
 
-            if (!no_state){
+            if (!no_state) {
                 ctx.restore();
             }
             ctx.translate(-dims[0], -dims[1]);

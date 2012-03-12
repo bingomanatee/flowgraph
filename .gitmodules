@@ -7,3 +7,6 @@
 [submodule "layout/h5"]
 	path = layout/h5
 	url = git@github.com:bingomanatee/nuby-express-HTML5-boilerplate-template.git
+[submodule "public/js/libs/easel"]
+	path = public/js/libs/easel
+	url = https://github.com/gskinner/EaselJS.git

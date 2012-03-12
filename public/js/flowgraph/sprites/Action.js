@@ -28,7 +28,9 @@ flowgraph.sprites.Action = function () {
     var diamond_offset = 12;
     var diamond_size = 6;
     var dash_image_loaded = false;
-    var item_id = 1;
+    var edit_image_loaded = false;
+    var edit_icon_offset = 4;
+    var icon_size = 20;
     var stack_order = 0;
 
     function _draw(ctx) {
@@ -36,6 +38,10 @@ flowgraph.sprites.Action = function () {
         if (!dash_image_loaded) {
             flowgraph.util.action_fills.init_dashed_image(ctx);
             dash_image_loaded = true;
+        }
+
+        if (!edit_image_loaded){
+            flowgraph.util.action_fills.init_edit_image(ctx);
         }
 
         var strength = this.get('strength');
@@ -63,6 +69,10 @@ flowgraph.sprites.Action = function () {
             case 'branch':
                 flowgraph.draw.diamond(ctx, this.dims(), props);
                 break;
+            case 'start':
+                flowgraph.draw.circle_cr(ctx, this.center().to_a(), parseInt(this.get('height')) / 2, props);
+                break;
+
             default:
                 flowgraph.draw.roundrect(ctx, this.dims(), props);
         }
@@ -71,6 +81,7 @@ flowgraph.sprites.Action = function () {
         ctx.translate(this.get('left'), this.get('top'));
         this.draw_label(ctx);
         this.draw_diamond(ctx);
+        this.draw_edit_icon(ctx);
         ctx.restore();
     }
 
@@ -80,7 +91,12 @@ flowgraph.sprites.Action = function () {
         initialize:function () {
             if (!this.get('_id')) {
                 this.set('_id', flowgraph.next_action_id());
-                this.set('name', this.get('_id') == 1 ? 'START' : 'Action ' + this.get('_id'));
+                if (this.get('_id') == 1) {
+                    this.set('name', 'START');
+                    this.set('strength', 'start');
+                } else {
+                    this.set('name', 'Action ' + this.get('_id'));
+                }
             }
             if (!this.get('stack_order')) {
                 this.set('stack_order', ++stack_order);
@@ -150,10 +166,13 @@ flowgraph.sprites.Action = function () {
 
         draw:_draw,
 
-        label_pt: function(){
-            switch (this.get('strength')){
+        label_pt:function () {
+            switch (this.get('strength')) {
+                case 'start':
+                    return [this.get('width') / 2, parseInt(this.get('height')) / 2 + 5];
+                    break;
                 case 'branch':
-                    return [this.get('width')/2, parseInt(this.get('height'))/2 + 5];
+                    return [this.get('width') / 2, parseInt(this.get('height')) / 2 + 5];
                     break;
                 default:
                     return [10, 20];
@@ -194,6 +213,15 @@ flowgraph.sprites.Action = function () {
             ctx.restore();
         },
 
+        draw_edit_icon: function(ctx){
+            var icon = flowgraph.util.action_fills.icons.edit;
+            var dims = this.edit_icon_dims();
+
+            if (icon.image){
+                ctx.drawImage(icon.image, dims[0], dims[1]);
+            }
+        },
+
         dims:function (relative) {
             if (relative) {
                 return [0, 0, this.get('width'), this.get('height')];
@@ -213,6 +241,26 @@ flowgraph.sprites.Action = function () {
                 dims[2] += this.get('left');
                 dims[1] += this.get('top');
                 dims[3] += this.get('top');
+            }
+
+            return dims;
+        },
+        edit_icon_dims:function (extent) {
+            var dims = [
+                this.get('width') - edit_icon_offset - icon_size,
+                this.get('height') - edit_icon_offset - icon_size,
+                icon_size,
+                icon_size
+            ];
+
+            if (extent) {
+                dims[2] += dims[0];
+                dims[3] += dims[1];
+
+                dims[0] += + this.get('left');
+                dims[2] += + this.get('left');
+                dims[1] += + this.get('top');
+                dims[3] += + this.get('top');
             }
 
             return dims;
@@ -237,7 +285,10 @@ flowgraph.sprites.Action = function () {
                     console.log('CLICKED ON ', this.get('name'));
                     if (flowgraph.mouse.in_rect.apply(flowgraph.mouse, this.diamond_dims())) {
                         show_item_form(this);
+                    } else if (flowgraph.mouse.in_rect.apply(flowgraph.mouse, this.edit_icon_dims(true))){
+                        document.location = '/flowgraph/' + flowgraph.project_id + '/action/' + this.get('_id');
                     }
+
                     return false;
                 } else {
                     return true;
