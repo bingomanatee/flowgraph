@@ -17,84 +17,173 @@ var COLORS = {
     WHITE:Graphics.getHSL(0, 0, 100, 1)
 }
 
-for (var v = 0; v <= 100; v += 10) {
-    COLORS['GREY' + v] = Graphics(0, 0, v, 1);
-    COLORS['RED' + v] = Graphics(0, 1, v, 1);
-    COLORS['YELLOW' + v] = Graphics(60, 1, v, 1);
-    COLORS['GREEN' + v] = Graphics(120, 1, v, 1);
-    COLORS['TEAL' + v] = Graphics(180, 1, v, 1);
-    COLORS['BLUE' + v] = Graphics(240, 1, v, 1);
-    COLORS['MAGENTA' + v] = Graphics(300, 1, v, 1);
+for (var v = 0; v <= 100; v += 5) {
+    COLORS['GREY' + v] = Graphics.getHSL(0, 0, v, 1);
+    COLORS['RED' + v] = Graphics.getHSL(0, 1, v, 1);
+    COLORS['YELLOW' + v] = Graphics.getHSL(60, 1, v, 1);
+    COLORS['GREEN' + v] = Graphics.getHSL(120, 1, v, 1);
+    COLORS['TEAL' + v] = Graphics.getHSL(180, 1, v, 1);
+    COLORS['BLUE' + v] = Graphics.getHSL(240, 1, v, 1);
+    COLORS['MAGENTA' + v] = Graphics.getHSL(300, 1, v, 1);
 }
 
 var BUTTON = {
-    H: 60,
-    W: 80,
-    CBORDER: COLORS.BLACK,
-    C1: COLORS.GREY20,
-    C2: COLORS.GREY95
+    H:60,
+    W:80,
+    CBORDER:COLORS.BLACK,
+    C1:COLORS.GREY20,
+    C2:COLORS.GREY95
 };
+
+
+var people_sprites = new SpriteSheet({
+    images:['/js/scener/img/people.png'],
+    frames:{width:48, height:48, count:6, regX:24, regy:24},
+    animations:{
+        template:[0, 0],
+        male1:[1, 1],
+        female1:[2, 2],
+        male2:[3, 3],
+        female2:[4, 4]
+    }
+});
+
+console.log('button: ', BUTTON);
+console.log('colors: ', COLORS);
 
 function _button_back(w, h, border, shadow, color) {
 
     var g = new Graphics();
     g.setStrokeStyle(1);
-    g.beginFill('rgba(0, 0, 0, 1)');
+    g.beginFill(shadow);
     g.beginStroke(border);
     g.drawRoundRect(0, 0, w, h, 4);
     g.endFill();
     g.endStroke();
 
-    g.beginFill(color);
-    g.drawRoundRect(3, 3, w - 6, h - 6, 2);
-
-    g.endFill();
-
     var s = new Shape(g);
+    var g2 = new Graphics();
 
-    return s;
+    g2.beginFill(color);
+    g2.drawRoundRect(3, 3, w - 6, h - 6, 2);
+    g2.endFill();
+
+    var s2 = new Shape(g2);
+    s2.shadow = new Shadow(color, 1, 1, 5);
+
+    var g3 = new Graphics();
+    g3.beginFill(COLORS.WHITE);
+    g3.drawRoundRect(3, 3, w - 6, h - 6, 2);
+    g3.endFill();
+
+    var s3 = new Shape(g3);
+    s3.shadow = new Shadow(COLORS.WHITE, -1, -1, 5);
+    var c = new Container();
+    c.addChild(s);
+    c.addChild(s3);
+    c.addChild(s2);
+
+    return c;
 }
 
-function add_toolbar_button(ani, frame, place, events) {
-    var button_back = _button_back(BUTTON.H, BUTTON.W, BUTTON.CBORDER, BUTTON.C1, BUTTON.C2);
+function add_toolbar_button(sprites, frame, place, events) {
+    var button_back_container = _button_back(BUTTON.H, BUTTON.W, BUTTON.CBORDER, BUTTON.C1, BUTTON.C2);
 
-    var c = new Container();
-    c.addChild(button_back);
-  //  c.addChild(ani);
-    c.y = place * (1 + BUTTON.H);
-    toolbar_container.addChild(c);
+    button_back_container.y = place * (1 + BUTTON.H);
+
+    var ani = new BitmapAnimation(sprites);
+    ani.gotoAndStop(frame);
+    var s = new Shape(ani);
+    s.x = (BUTTON.W - ani.spriteSheet._frameWidth);
+    s.y = (BUTTON.H - ani.spriteSheet._frameHeight);
+    button_back_container.addChild(s);
+    events(button_back_container);
+
+    toolbar_container.addChild(button_back_container);
     update = true;
 }
 
-function _people_events(target) {
+function Person(frame, x, y) {
+    this.frame = frame;
+    this.move_to(x, y);
+}
 
+Person.prototype = {
+    x:0,
+    y:0,
+    scale:1.0,
+
+    container:null,
+
+    move_to:function (x, y) {
+        this.x = x;
+        this.y = y;
+
+        if (this.container) {
+            this.container.x = this.x;
+            this.container.y = this.y;
+        }
+    },
+
+    scale_to:function (n) {
+       this.scale = Math.min(5, Math.max(0.1, n));
+        if (this.container){
+            this.container.scaleX = this.container.scaleY = this.scale;
+        }
+    },
+
+    add_to:function (container) {
+        if (!this.container) {
+            this._make();
+        }
+
+        container.addChild(this.container);
+    },
+
+    _make:function () {
+
+        this.container = new Container();
+        this.container.x = this.x;
+        this.container.y = this.y;
+        this.container.scaleX = this.container.scaleY = this.scale;
+
+        var ani = new BitmapAnimation(people_sprites);
+        ani.gotoAndStop(this.frame);
+        this.container.addChild(ani);
+    }
+}
+
+function _make_new_person(target, evt) {
+
+    var p = new Person(_.shuffle(['male1', 'male2', 'female1', 'female2']).pop());
+    p.scale_to(Math.round((Math.random() + Math.random()) * 16)/4);
+
+    p.move_to(Math.round(Math.random() * 25) * 25 + 100,
+        Math.round(Math.random() * 8) * 25 + 50);
+
+    p.add_to(people_container);
+    update = true;
+}
+
+
+function _people_events(button) {
+    return (function (target) {
+        button.onClick = function (evt) {
+            _make_new_person(target, evt);
+        }
+    })
+        (button);
 }
 
 function handlePeopleLoad(event) {
     Ticker.addListener(window);
 
-    var people_sprites = new SpriteSheet({
-        images:[people_img],
-        frames:{width:48, height:48, count:6, regX:24, regy:24},
-        animations:{
-            template:[0, 0],
-            male1:[1, 1],
-            female1:[2, 2],
-            male2:[3, 3],
-            female2:[4, 4]
-        }
-    });
-    var people_ani = new BitmapAnimation(people_sprites);
-    people_ani.gotoAndStop('female2');
-    var s = new Shape(people_ani);
+    //  toolbar_container.addChild(s);
 
-    s.x = 100;
-    s.y = 100;
-    toolbar_container.addChild(s);
-
-    add_toolbar_button(people_ani, 'male1', 1, _people_events)
+    add_toolbar_button(people_sprites, 'male2', 1, _people_events);
     update = true;
 }
+
 /*
  function handlePersonLoad(event) {
  var person_img = event.target;
@@ -239,21 +328,14 @@ function init() {
     stage.addChild(toolbar_container);
 
     // enable touch interactions if supported on the current device:
-    if (Touch.isSupported()) {
-        Touch.enable(stage);
-    }
+    /*  if (Touch.isSupported()) {
+     Touch.enable(stage);
+     } */
 
     // enabled mouse over / out events
     stage.enableMouseOver(10);
 
-    /*
-     var person_image = new Image();
-     person_image.src = "/js/scener/img/person.png";
-     person_image.onload = handlePersonLoad;
-     */
-    var people_image = new Image();
-    people_image.src = '/js/scener/img/people.png';
-    people_image.onload = handlePeopleLoad;
+    handlePeopleLoad();
 }
 
 $(init);
