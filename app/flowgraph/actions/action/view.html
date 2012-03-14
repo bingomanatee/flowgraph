@@ -3,17 +3,20 @@
 <h2>Action: <%- action._id %></h2>
 
 <h2>Project: <%- project._id %></h2>
-        
+
 <canvas id="action_canvas" width="980" height="580"></canvas>
 
 <script src="/js/libs/underscore/underscore.js"></script>
 <!-- Import EaselJS Framework -->
 <script src="/js/libs/easel/src/easeljs/utils/UID.js"></script>
+
 <script src="/js/libs/easel/src/easeljs/geom/Point.js"></script>
 <script src="/js/libs/easel/src/easeljs/geom/Matrix2D.js"></script>
 <script src="/js/libs/easel/src/easeljs/geom/Rectangle.js"></script>
+
 <script src="/js/libs/easel/src/easeljs/events/MouseEvent.js"></script>
 <script src="/js/libs/easel/src/easeljs/utils/SpriteSheetUtils.js"></script>
+
 <script src="/js/libs/easel/src/easeljs/display/DisplayObject.js"></script>
 <script src="/js/libs/easel/src/easeljs/display/Shape.js"></script>
 <script src="/js/libs/easel/src/easeljs/display/Shadow.js"></script>
@@ -23,12 +26,16 @@
 <script src="/js/libs/easel/src/easeljs/display/Container.js"></script>
 <script src="/js/libs/easel/src/easeljs/display/Stage.js"></script>
 <script src="/js/libs/easel/src/easeljs/display/BitmapAnimation.js"></script>
+
 <script src="/js/libs/easel/src/easeljs/utils/Ticker.js"></script>
 <!-- End EaselJS Imports -->
 
-<script src="/js/scener/sprites/People.js" defer="defer">
+<script src="/js/scener/sprites/People.js" defer="defer"></script>
 
-</script>
-<script src="/js/scener/CORE.js" defer="defer">
+<script src="/js/scener/ground/Tile.js" defer="defer"></script>
+<script src="/js/scener/ground/Ground.js" defer="defer"></script>
 
-</script>
+<script src="/js/scener/toolbar/Button.js" defer="defer"></script>
+<script src="/js/scener/sprites/People.js" defer="defer"></script>
+
+<script src="/js/scener/CORE.js" defer="defer"></script>

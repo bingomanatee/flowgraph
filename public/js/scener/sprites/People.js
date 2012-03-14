@@ -1,50 +1,58 @@
-function Person(frame, x, y) {
-    this.frame = frame;
-    this.move_to(x, y);
-}
+(function () {
 
-Person.prototype = {
-    x:0,
-    y:0,
-    scale:1.0,
-
-    container:null,
-
-    move_to:function (x, y) {
-        this.x = x;
-        this.y = y;
-
-        if (this.container) {
-            this.container.x = this.x;
-            this.container.y = this.y;
+    var people_sprites = new SpriteSheet({
+        images:['/js/scener/img/people.png'],
+        frames:{width:48, height:48, count:6, regX:24, regy:24},
+        animations:{
+            template:[0, 0],
+            male1:[1, 1],
+            female1:[2, 2],
+            male2:[3, 3],
+            female2:[4, 4]
         }
-    },
+    });
 
-    scale_to:function (n) {
+    function Person(frame, x, y) {
+
+        this.init(frame, x, y);
+    }
+
+
+    var p = Person.prototype = new Container();
+    p.Container_initialize = p.initialize;
+
+    p.init = function (frame, x, y) {
+        this.Container_initialize.call(this);
+        this.frame = frame;
+        this.x = x | 0;
+        this.y = y | 0;
+        var g = new Graphics();
+        this._make();
+    }
+
+    p.frame = 'male1';
+    p.scale = 1.0;
+    p.scale_to = function (n) {
         this.scale = Math.min(5, Math.max(0.1, n));
-        if (this.container) {
-            this.container.scaleX = this.container.scaleY = this.scale;
-        }
-    },
 
-    add_to:function (container) {
-        if (!this.container) {
-            this._make();
-        }
+        this.scaleX = this.scaleY = this.scale;
+    }
 
-        container.addChild(this.container);
-    },
-
-    _make:function () {
-
-        this.container = self_container = new Container();
-        this.container.x = this.x;
-        this.container.y = this.y;
-        this.container.scaleX = this.container.scaleY = this.scale;
+    p._make = function () {
+        if (this._made) return;
+        var g = new Graphics();
+        g.beginFill(COLORS.GREY95);
+        g.drawRect(0, 0, 100, 100);
+        g.endFill();
+        var s2 = new Shape(g);
+        this.addChild(s2);
 
         var ani = new BitmapAnimation(people_sprites);
-        ani.gotoAndStop(this.frame);
-        this.container.addChild(ani);
+        ani.gotoAndStop('male1');
+        var s = new Shape(ani);
+        s.x = 48;
+        s.y = 24;
+        this.addChild(s);
 
         (function (target) {
             target.onPress = function (e2) {
@@ -61,37 +69,15 @@ Person.prototype = {
                         to_sort = setTimeout(function () {
                             sort_people();
                             to_sort = null;
-                            update = true
+                            update = true   // my wonderful global variable...
                         }, 250);
                     }
                 }
             }
-            target.onRelease = function (e2) {
-                update = true;
-            }
-        })(this.container)
+        })(this);
+        this._made = true;
     }
-}
-
-function _make_new_person(target, evt) {
-
-    var p = new Person(_.shuffle(['male1', 'male2', 'female1', 'female2']).pop());
-    p.scale_to(Math.round((Math.random() + Math.random()) * 16) / 4);
-
-    p.move_to(Math.round(Math.random() * 25) * 25 + 100,
-        Math.round(Math.random() * 8) * 25 + 50);
-
-    p.add_to(people_container);
-    sort_people();
-    update = true;
-}
 
 
-function _people_events(button) {
-    return (function (target) {
-        button.onClick = function (evt) {
-            _make_new_person(target, evt);
-        }
-    })
-        (button);
-}
+    window.Person = Person;
+} )(window);

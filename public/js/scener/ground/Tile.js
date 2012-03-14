@@ -1,7 +1,8 @@
-function Tile(i, j, g) {
+function Tile(i, j, g, type) {
     this.i = i;
     this.j = j;
     this.ground = g;
+    this.type = type ? type : 0;
 }
 
 Tile.prototype = {
@@ -16,28 +17,25 @@ Tile.prototype = {
         return this._center;
     },
 
+    as_graphic:function () {
 
-}
+        var start = this.ground.isoPoint(this.i + 0.5, this.j, 0);
+        var dims = [start,
+            this.ground.isoPoint(this.i, this.j + 0.5, 0),
+            this.ground.isoPoint(this.i - 0.5, this.j, 0),
+            this.ground.isoPoint(this.i, this.j - 0.5, 0),
+            start
+        ];
 
-function Ground(x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-
-    this.tiles = [];
-
-}
-
-Ground.prototype = {
-
-    make_tiles:function (mini, minj, maxi, maxj) {
-        for (var i = mini; i <= maxi; ++i) {
-            for (var j = minj; j <= maxj; ++j) {
-                this.tiles.push(new Tile(i, j, this));
-            }
+        if (!this.type){
+            return this._draw_void(dims);
         }
+    } ,
 
+    _draw_void: function(dims){
+        var g = new Graphic();
+        g.openP
     }
 
 }
+

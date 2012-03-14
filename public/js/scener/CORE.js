@@ -63,45 +63,11 @@ function sort_people() {
 console.log('button: ', BUTTON);
 console.log('colors: ', COLORS);
 
-function _button_back(w, h, border, shadow, color) {
-
-    var g = new Graphics();
-    g.setStrokeStyle(1);
-    g.beginFill(shadow);
-    g.beginStroke(border);
-    g.drawRoundRect(0, 0, w, h, 4);
-    g.endFill();
-    g.endStroke();
-
-    var s = new Shape(g);
-    var g2 = new Graphics();
-
-    g2.beginFill(color);
-    g2.drawRoundRect(3, 3, w - 6, h - 6, 2);
-    g2.endFill();
-
-    var s2 = new Shape(g2);
-    s2.shadow = new Shadow(color, 1, 1, 5);
-
-    var g3 = new Graphics();
-    g3.beginFill(COLORS.WHITE);
-    g3.drawRoundRect(3, 3, w - 6, h - 6, 2);
-    g3.endFill();
-
-    var s3 = new Shape(g3);
-    s3.shadow = new Shadow(COLORS.WHITE, -1, -1, 5);
-    var c = new Container();
-    c.addChild(s);
-    c.addChild(s3);
-    c.addChild(s2);
-
-    return c;
-}
-
 function add_toolbar_button(sprites, frame, place, events) {
-    var button_back_container = _button_back(BUTTON.H, BUTTON.W, BUTTON.CBORDER, BUTTON.C1, BUTTON.C2);
+    var button_back_container = new ToolbarButton({width: 64, height: 64});
 
     button_back_container.y = place * (1 + BUTTON.H);
+    button_back_container.make();
 
     var ani = new BitmapAnimation(sprites);
     ani.gotoAndStop(frame);
@@ -118,9 +84,17 @@ function add_toolbar_button(sprites, frame, place, events) {
 function handlePeopleLoad(event) {
     Ticker.addListener(window);
 
-    //  toolbar_container.addChild(s);
+    function _new_person(target){
+        target.onClick = function(evt){
+            var p = new Person();
+            p.x = Math.random() * 400;
+            p.y = Math.random() * 300;
+            people_container.addChild(p);
+            update = true;
+        }
+    }
 
-    add_toolbar_button(people_sprites, 'male2', 1, _people_events);
+    add_toolbar_button(people_sprites, 'male2', 1, _new_person);
     update = true;
 }
 
