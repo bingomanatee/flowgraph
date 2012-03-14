@@ -8,8 +8,10 @@ var update = true;
 
 var last_clicked = null;
 
-var daisy_container = new Container();
+var ground_container = new Container();
 var people_container = new Container();
+
+
 var toolbar_container = new Container();
 
 var COLORS = {
@@ -35,6 +37,10 @@ var BUTTON = {
     C2:COLORS.GREY95
 };
 
+function _y_sort(c) {
+    return c.y * 100 + c.x / 1000;
+}
+
 
 var people_sprites = new SpriteSheet({
     images:['/js/scener/img/people.png'],
@@ -47,6 +53,12 @@ var people_sprites = new SpriteSheet({
         female2:[4, 4]
     }
 });
+
+function sort_people() {
+    var c = people_container.children;
+    people_container.children = _.sortBy(c, _y_sort);
+
+}
 
 console.log('button: ', BUTTON);
 console.log('colors: ', COLORS);
@@ -103,78 +115,6 @@ function add_toolbar_button(sprites, frame, place, events) {
     update = true;
 }
 
-function Person(frame, x, y) {
-    this.frame = frame;
-    this.move_to(x, y);
-}
-
-Person.prototype = {
-    x:0,
-    y:0,
-    scale:1.0,
-
-    container:null,
-
-    move_to:function (x, y) {
-        this.x = x;
-        this.y = y;
-
-        if (this.container) {
-            this.container.x = this.x;
-            this.container.y = this.y;
-        }
-    },
-
-    scale_to:function (n) {
-       this.scale = Math.min(5, Math.max(0.1, n));
-        if (this.container){
-            this.container.scaleX = this.container.scaleY = this.scale;
-        }
-    },
-
-    add_to:function (container) {
-        if (!this.container) {
-            this._make();
-        }
-
-        container.addChild(this.container);
-    },
-
-    _make:function () {
-
-        this.container = new Container();
-        this.container.x = this.x;
-        this.container.y = this.y;
-        this.container.scaleX = this.container.scaleY = this.scale;
-
-        var ani = new BitmapAnimation(people_sprites);
-        ani.gotoAndStop(this.frame);
-        this.container.addChild(ani);
-    }
-}
-
-function _make_new_person(target, evt) {
-
-    var p = new Person(_.shuffle(['male1', 'male2', 'female1', 'female2']).pop());
-    p.scale_to(Math.round((Math.random() + Math.random()) * 16)/4);
-
-    p.move_to(Math.round(Math.random() * 25) * 25 + 100,
-        Math.round(Math.random() * 8) * 25 + 50);
-
-    p.add_to(people_container);
-    update = true;
-}
-
-
-function _people_events(button) {
-    return (function (target) {
-        button.onClick = function (evt) {
-            _make_new_person(target, evt);
-        }
-    })
-        (button);
-}
-
 function handlePeopleLoad(event) {
     Ticker.addListener(window);
 
@@ -183,83 +123,6 @@ function handlePeopleLoad(event) {
     add_toolbar_button(people_sprites, 'male2', 1, _people_events);
     update = true;
 }
-
-/*
- function handlePersonLoad(event) {
- var person_img = event.target;
- var icon_bitmap = new Bitmap(person_img);
- icon_bitmap.x = 4;
- icon_bitmap.y = 4;
-
- var g = new Graphics();
- g.setStrokeStyle(1);
- g.beginFill(Graphics.getRGB(200, 200, 200));
- g.beginStroke(Graphics.getRGB(0, 0, 0));
- g.drawRoundRect(0, 0, 40, 40, 4);
- g.endFill();
- g.endStroke();
-
- var person_button = new Shape(g);
- person_button.x = 2;
- person_button.y = 2;
- toolbar_container.addChild(person_button);
- toolbar_container.addChild(icon_bitmap);
-
- (function (target) {
- person_button.onClick = function (evt) {
- var np_container = new Container();
- np_container.x = np_container.y = 50;
- var bm = new Bitmap(person_img);
- bm.y = 2;
- np_container.addChild(bm);
- np_container.bm = bm;
- np_container.regX = 10;
- np_container.regY = 10;
- people_container.addChild(np_container);
-
- (function (t2) {
- np_container.onPress = function (e2) {
-
-
- var offset = {x:t2.x - e2.stageX, y:t2.y - e2.stageY};
-
- e2.onMouseMove = function (e3) {
- t2.x = e3.stageX + offset.x;
- t2.y = e3.stageY + offset.y;
- update = true;
- }
- last_clicked = t2;
-
- }
-
- np_container.onMouseOver = function () {
- var g = new Graphics();
- g.setStrokeStyle(1);
- g.beginStroke(Graphics.getRGB(0, 0, 0));
- g.drawRoundRect(0, 0, 40, 40, 4);
- g.endStroke();
-
- t2.addChild(new Shape(g));
- t2.scaleX = t2.scaleY = 2;
- update = true;
- }
- np_container.onMouseOut = function () {
- t2.scaleX = t2.scaleY = 1;
- t2.removeChildAt(1);
- update = true;
- }
-
- })(np_container);
-
- update = true;
- }
-
-
- })(person_button);
-
- stage.update();
- }
- */
 
 function handleImageLoad(event) {
     Ticker.addListener(window);
@@ -323,7 +186,7 @@ function init() {
 
     //check to see if we are running in a browser with touch support
     stage = new Stage(canvas);
-    stage.addChild(daisy_container);
+    stage.addChild(ground_container);
     stage.addChild(people_container);
     stage.addChild(toolbar_container);
 
