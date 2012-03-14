@@ -4,7 +4,7 @@ function Tile(i, j, g, type) {
     this.ground = g;
     this.type = type ? type : 0;
 }
-
+        // deprecated -- see Ground
 Tile.prototype = {
 
     center:function (reload) {

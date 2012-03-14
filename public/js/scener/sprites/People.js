@@ -1,4 +1,4 @@
-(function () {
+(function (window) {
 
     var people_sprites = new SpriteSheet({
         images:['/js/scener/img/people.png'],

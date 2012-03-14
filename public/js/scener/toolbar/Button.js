@@ -20,6 +20,7 @@
         )
         this.initialize();
     }
+
     var p = ToolbarButton.prototype = new Container();
     p.Container_initialize = p.initialize;
 
