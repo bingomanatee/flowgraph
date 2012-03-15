@@ -110,7 +110,7 @@ flowgraph.util.action_fills = function () {
         ];
 
         var coords = [-10, -20, 0, -20, -20, 50];
-        console.log('start blend: ', coords);
+   //     console.log('start blend: ', coords);
         return flowgraph.draw.grad(ctx, stops, coords, 'radial');
     }
 
