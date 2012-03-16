@@ -22,3 +22,8 @@ function easely(class_name, base, base_name) {
 
     return f;
 }
+
+Point.prototype.move_to = function(n){
+    n.x = this.x;
+    n.y = this.y;
+}

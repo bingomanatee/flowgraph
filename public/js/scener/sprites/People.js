@@ -12,20 +12,13 @@
         }
     });
 
-    function Person(frame, x, y) {
+    var Person = easely('Person', Container, 'Container');
+    var p = Person.prototype;
 
-        this.init(frame, x, y);
-    }
-
-
-    var p = Person.prototype = new Container();
-    p.Container_initialize = p.initialize;
-
-    p.init = function (frame, x, y) {
+    p._post_initialize = function (frame, i, j) {
         this.Container_initialize.call(this);
         this.frame = frame;
-        this.x = x | 0;
-        this.y = y | 0;
+        this.move_to(i, j);
         var g = new Graphics();
         this._make();
     }
@@ -40,18 +33,18 @@
 
     p._make = function () {
         if (this._made) return;
-        var g = new Graphics();
-        g.beginFill(COLORS.GREY95);
-        g.drawRect(0, 0, 100, 100);
-        g.endFill();
-        var s2 = new Shape(g);
+
+        var t = new Text('Person (i' + this.i + ', j' + this.j + ')', '14pt serif bold', COLORS.WHITE);
+        var s2 = new Shape(t);
+        s2.x = -20;
+        s2.y = 12;
         this.addChild(s2);
 
         var ani = new BitmapAnimation(people_sprites);
-        ani.gotoAndStop('male1');
+        ani.gotoAndStop(this.frame);
         var s = new Shape(ani);
-        s.x = 48;
-        s.y = 24;
+        s.x = 0;
+        s.y = -50;
         this.addChild(s);
 
         (function (target) {
@@ -77,6 +70,16 @@
         })(this);
         this._made = true;
     }
+
+    p.move_to = function(i, j){
+        this.i = i;
+        this.j = j;
+        console.log('person at ', i, ',', j);
+        update = true;
+        ground.iso_to_xy(this).move_to(this);
+        ground.move_to(this);
+    }
+
 
 
     window.Person = Person;

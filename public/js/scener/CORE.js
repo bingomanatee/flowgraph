@@ -19,14 +19,35 @@ var COLORS = {
     WHITE:Graphics.getHSL(0, 0, 100, 1)
 }
 
+var base_colors = {
+    GREY: {h: 0, s: 0}
+}
+'RED,YELLOW,GREEN, TEAL,BLUE,MAGENTA'.split(',').forEach(
+    function(c, i){
+        base_colors[c] = {h: 60 * i, s: 100}
+    }
+);
+
 for (var v = 0; v <= 100; v += 5) {
+    for (var c in base_colors){
+        var base_color = base_colors[c];
+        var color_def = _.extend({}, base_color, {v: v});
+
+        COLORS[c + v] = Graphics.getHSL(color_def.h, color_def.s, color_def.v, 1);
+
+        for (var a = 0.0; a < 100; a += 20.0){
+          COLORS[c + v + 'a' + a] = Graphics.getHSL(color_def.h, color_def.s, color_def.v, a / 100.0);
+        }
+    }
+
+    /*
     COLORS['GREY' + v] = Graphics.getHSL(0, 0, v, 1);
-    COLORS['RED' + v] = Graphics.getHSL(0, 1, v, 1);
-    COLORS['YELLOW' + v] = Graphics.getHSL(60, 1, v, 1);
-    COLORS['GREEN' + v] = Graphics.getHSL(120, 1, v, 1);
-    COLORS['TEAL' + v] = Graphics.getHSL(180, 1, v, 1);
-    COLORS['BLUE' + v] = Graphics.getHSL(240, 1, v, 1);
-    COLORS['MAGENTA' + v] = Graphics.getHSL(300, 1, v, 1);
+    COLORS['RED' + v] = Graphics.getHSL(0, 100, v, 1);
+    COLORS['YELLOW' + v] = Graphics.getHSL(60, 100, v, 1);
+    COLORS['GREEN' + v] = Graphics.getHSL(120, 100, v, 1);
+    COLORS['TEAL' + v] = Graphics.getHSL(180, 100, v, 1);
+    COLORS['BLUE' + v] = Graphics.getHSL(240, 100, v, 1);a
+    COLORS['MAGENTA' + v] = Graphics.getHSL(300, 100, v, 1); */
 }
 
 var BUTTON = {
@@ -64,7 +85,7 @@ console.log('button: ', BUTTON);
 console.log('colors: ', COLORS);
 
 function add_toolbar_button(sprites, frame, place, events) {
-    var button_back_container = new ToolbarButton({width: 64, height: 64});
+    var button_back_container = new ToolbarButton({width:64, height:64});
 
     button_back_container.y = place * (1 + BUTTON.H);
     button_back_container.make();
@@ -81,14 +102,15 @@ function add_toolbar_button(sprites, frame, place, events) {
     update = true;
 }
 
-function handlePeopleLoad(event) {
+function init_toolbar() {
     Ticker.addListener(window);
 
-    function _new_person(target){
-        target.onClick = function(evt){
-            var p = new Person();
-            p.x = Math.random() * 400;
-            p.y = Math.random() * 300;
+    function _new_person(target) {
+        target.onClick = function (evt) {
+            var p = new Person(_.shuffle(people_sprites.getAnimations()).pop(),
+                Math.round(Math.random() * 10 - Math.random() * 10),
+                Math.round(Math.random() * 10 - Math.random() * 10)
+            );
             people_container.addChild(p);
             update = true;
         }
@@ -105,30 +127,41 @@ function tick() {
         stage.update();
     }
 }
-
+var ground;
+var grass_image;
 function init() {
-    // create stage and point it to the canvas:
-    canvas = document.getElementById("action_canvas");
+    grass_image = new Image();
+    grass_image.src = '/js/scener/img/grass_green.png';
 
-    //check to see if we are running in a browser with touch support
-    stage = new Stage(canvas);
-    stage.addChild(ground_container);
-    stage.addChild(people_container);
-    stage.addChild(toolbar_container);
+    grass_image.onload = function () {
+        // create stage and point it to the canvas:
+        canvas = document.getElementById("action_canvas");
 
-    // enable touch interactions if supported on the current device:
-    /*  if (Touch.isSupported()) {
-     Touch.enable(stage);
-     } */
+        //check to see if we are running in a browser with touch support
+        stage = new Stage(canvas);
+        stage.addChild(ground_container);
+        stage.addChild(people_container);
+        stage.addChild(toolbar_container);
 
-    // enabled mouse over / out events
-    stage.enableMouseOver(10);
-    var ground = new Ground();
-    ground.init_terrain(20, 20);
-    ground.x = ground.y = 200;
-    ground_container.addChild(ground);
+        // enable touch interactions if supported on the current device:
+        /*  if (Touch.isSupported()) {
+         Touch.enable(stage);
+         } */
 
-    handlePeopleLoad();
+        // enabled mouse over / out events
+        stage.enableMouseOver(10);
+        ground = new Ground();
+        ground.iso_diam_width = 60;
+        ground.iso_diam_height = 30;
+        ground.x = 500;
+        ground.y = 300;
+        ground.i_min = ground.j_min = -10;
+        ground.init_terrain(20, 20);
+        ground_container.addChild(ground);
+
+        init_toolbar();
+
+    }
 }
 
 $(init);
