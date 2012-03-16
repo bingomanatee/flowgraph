@@ -1,6 +1,6 @@
 function easely(class_name, base, base_name) {
     var bi = base_name + '_initialize';
-    var f = function(){
+    var f = function () {
         var args = arguments;
         this.initialize.apply(this, args);
     };
@@ -18,12 +18,30 @@ function easely(class_name, base, base_name) {
         }
     }
 
-    window[class_name] = class_name;
+    window[class_name] = f;
 
     return f;
 }
 
-Point.prototype.move_to = function(n){
+Point.prototype.move_to = function (n) {
     n.x = this.x;
     n.y = this.y;
+}
+
+Point.prototype.distance_to = function (p) {
+    if (!p instanceof Point){
+        console.log('non point', p);
+        throw new Error('Attempt to calc distance_to non-point');
+    }
+    var dx = this.x - p.x;
+    var dy = this.y - p.y;
+
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+Point.prototype.distance_to_xy = function (x, y) {
+    var dx = this.x - x;
+    var dy = this.y - y;
+
+    return Math.sqrt(dx * dx + dy * dy);
 }

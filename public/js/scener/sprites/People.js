@@ -55,8 +55,16 @@
 
                 var to_sort = null;
                 e2.onMouseMove = function (e3) {
+                    var center = ground.iso_to_xy({i: 0, j: 0});
                     target.x = e3.stageX + offset.x;
                     target.y = e3.stageY + offset.y;
+                    target.x -= center.x;
+                    target.y -= center.y;
+                    target.x -= target.x % ground.iso_diam_width;
+                    target.y -= target.y %  ground.iso_diam_height;
+                    target.x += center.x + 24;
+                    target.y += center.y + 3;
+
                     update = true;
                     if (!to_sort) {
                         to_sort = setTimeout(function () {

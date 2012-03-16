@@ -84,7 +84,7 @@ function sort_people() {
 console.log('button: ', BUTTON);
 console.log('colors: ', COLORS);
 
-function add_toolbar_button(sprites, frame, place, events) {
+function add_toolbar_button(place, events, image) {
     var button_back_container = new ToolbarButton({width:64, height:64});
 
     button_back_container.y = place * (1 + BUTTON.H);
@@ -95,6 +95,7 @@ function add_toolbar_button(sprites, frame, place, events) {
     var s = new Shape(ani);
     s.x = (BUTTON.W - ani.spriteSheet._frameWidth);
     s.y = (BUTTON.H - ani.spriteSheet._frameHeight);
+
     button_back_container.addChild(s);
     events(button_back_container);
 
