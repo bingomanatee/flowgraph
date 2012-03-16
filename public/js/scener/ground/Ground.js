@@ -1,18 +1,42 @@
-
 (function (window) {
 
     var grass_sprite_sheet = new SpriteSheet({
         images:['/js/scener/img/grass.png'],
         frames:{width:24, height:24, count:4, regX:12, regy:12},
         animations:{
-            fresh: [0, 0],
-            yellow: [1, 1],
-            sparse: [2, 2],
-            dirt: [3, 3]
+            fresh:[0, 0],
+            yellow:[1, 1],
+            sparse:[2, 2],
+            dirt:[3, 3]
         }
     });
 
     var Ground_Tile = easely('Ground_Tile', Container, 'Container');
+
+    Ground_Tile.prototype._gpn_net = function (w, count, i, j) {
+        var min_i = i - (w * count);
+        var max_i = i + (w * count);
+        var min_j = j - (w * count);
+        var max_j = j + (w * count);
+
+        var out = [];
+        for (var net_i = min_i; net_i <= max_i; net_i += w) {
+            for (var net_j = min_j; net_j <= max_j; net_j += w) {
+                var o = {i:net_i, j:net_j};
+                out.push(_.extend(o, { p:this.iso_to_xy(o)}));
+            }
+        }
+        return out;
+    }
+
+
+    Ground_Tile.prototype.grid_point_near = function (x, y) {
+        var p = new Point(x, y);
+        var net = this._gpn_net(1, 20, 0, 0);
+        net.forEach(function (net_data) {
+            net_data.dist = net_data.p.distance(p);
+        });
+    }
 
     Ground_Tile.prototype._pre_initialize = function (g, i, j) {
         this.ground = g;
@@ -48,7 +72,7 @@
         var st = new Shape(t);
         xy_point.move_to(st);
         st.x -= 40;
-      //  this.addChild(st);
+        //  this.addChild(st);
 
         var xy = '(x: ' + xy_point.x + ', y: ' + xy_point.y + ')';
         t = new Text(xy, '20 pt serif', COLORS.WHITE);
@@ -56,7 +80,7 @@
         xy_point.move_to(st2);
         st2.x -= 40;
         st2.y += 15;
-      //  this.addChild(st2);
+        //  this.addChild(st2);
     }
 
     Ground_Tile.prototype.get_i = function () {
@@ -134,9 +158,9 @@
         this.addChild(this.frame_of_ref);
     }
 
-       p.move_to = function(n){
-           this.localToGlobal(n.x, n.y).move_to(n);
-       }
+    p.move_to = function (n) {
+        this.localToGlobal(n.x, n.y).move_to(n);
+    }
 
     window.Ground = Ground;
 } )(window);
