@@ -283,7 +283,7 @@ flowgraph.init_events.push(function () {
 
     var toolbar = new flowgraph.sprites.Toolbar({
         type:'toolbar',
-        image:{src:'http://localhost:5103/img/toolbar.png'},
+        image:{src:'/img/toolbar.png'},
         tiles:[
             {_id:'new_action', name:'New Node', activate:_new_action, reset:_new_action_reset},
             {_id:'new_text', name:'New Text'},

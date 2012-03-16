@@ -145,7 +145,7 @@ flowgraph.util.action_fills = function () {
                 _dashed.fill = ctx.createPattern(_dash_img, 'repeat');
             };
 
-            _dash_img.src = 'http://localhost:5103/js/flowgraph/sprites/dashed.png';
+            _dash_img.src = '/js/flowgraph/sprites/dashed.png';
             return true;
         },
 
@@ -153,7 +153,7 @@ flowgraph.util.action_fills = function () {
             _edit_icon_img = new Image();
             _edit_icon_img.onload = _on_ei_load;
 
-            _edit_icon_img.src = 'http://localhost:5103/js/flowgraph/sprites/icons/edit.png';
+            _edit_icon_img.src = '/js/flowgraph/sprites/icons/edit.png';
             return true;
         },
 
