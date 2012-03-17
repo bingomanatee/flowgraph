@@ -5,12 +5,13 @@ var mouseTarget;	// the display object currently under the mouse, or being dragg
 var dragStarted;	// indicates whether we are currently in a drag operation
 var offset = new Point();
 var update = true;
+var mode = '';
 
 var last_clicked = null;
 
 var ground_container = new Container();
 var people_container = new Container();
-
+var scener_mode = '';
 
 var toolbar_container = new Container();
 
@@ -51,8 +52,8 @@ for (var v = 0; v <= 100; v += 5) {
 }
 
 var BUTTON = {
-    H:60,
-    W:80,
+    H:70,
+    W:70,
     CBORDER:COLORS.BLACK,
     C1:COLORS.GREY20,
     C2:COLORS.GREY95
@@ -84,20 +85,14 @@ function sort_people() {
 console.log('button: ', BUTTON);
 console.log('colors: ', COLORS);
 
-function add_toolbar_button(place, events, image) {
-    var button_back_container = new ToolbarButton({width:64, height:64});
+function add_toolbar_button(s, place, event) {
+    var button_back_container = new ToolbarButton({width:BUTTON.W, height:BUTTON.H});
 
-    button_back_container.y = place * (1 + BUTTON.H);
+    button_back_container.y = place * (15 + BUTTON.H);
     button_back_container.make();
 
-    var ani = new BitmapAnimation(sprites);
-    ani.gotoAndStop(frame);
-    var s = new Shape(ani);
-    s.x = (BUTTON.W - ani.spriteSheet._frameWidth);
-    s.y = (BUTTON.H - ani.spriteSheet._frameHeight);
-
     button_back_container.addChild(s);
-    events(button_back_container);
+    event(button_back_container);
 
     toolbar_container.addChild(button_back_container);
     update = true;
@@ -117,8 +112,17 @@ function init_toolbar() {
         }
     }
 
-    add_toolbar_button(people_sprites, 'male2', 1, _new_person);
+
+    var ani = new BitmapAnimation(people_sprites);
+    ani.gotoAndStop('female2');
+    var s = new Shape(ani);
+    s.x = (BUTTON.W - ani.spriteSheet._frameWidth) * 1.5;
+    s.y = (BUTTON.H - ani.spriteSheet._frameHeight)/2;
+
+    add_toolbar_button(s, 1, _new_person);
     update = true;
+
+    init_toolbar_terrain_button()
 }
 
 function tick() {
@@ -159,6 +163,7 @@ function init() {
         ground.i_min = ground.j_min = -10;
         ground.init_terrain(20, 20);
         ground_container.addChild(ground);
+
 
         init_toolbar();
 

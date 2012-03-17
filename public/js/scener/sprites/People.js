@@ -49,7 +49,9 @@
 
         (function (target) {
             target.onPress = function (e2) {
-
+                if (scener_mode){
+                    return;
+                }
 
                 var offset = {x:target.x - e2.stageX, y:target.y - e2.stageY};
 
