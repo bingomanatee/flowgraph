@@ -60,7 +60,7 @@
         })
         var g = new Graphics();
 
-        g.beginFill(COLORS.RED50);
+        g.beginFill(SCENER_CORE.COLORS.RED50);
         g.polyShape(
             this.iso_to_xy({i:0.2, j:0.2, k:0}),
             this.iso_to_xy({i:-0.2, j:0.2, k:0}),
@@ -118,5 +118,5 @@
         return nearest;
     }
 
-    window.Ground = Ground;
+    SCENER_CORE.sprites.Ground = Ground;
 } )(window);

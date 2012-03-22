@@ -32,8 +32,8 @@
         g.setStrokeStyle(5);
         switch(this.terrain){
             case 'concrete':
-                g.beginStroke(COLORS.GREY20a20);
-                g.beginFill(COLORS.GREY80);
+                g.beginStroke(SCENER_CORE.COLORS.GREY20a20);
+                g.beginFill(SCENER_CORE.COLORS.GREY80);
                 g.polyShape(north, east, south, west);
                 g.endFill();
                 g.endStroke();
@@ -42,8 +42,8 @@
 
             default:
 
-                g.beginStroke(COLORS.GREEN45a20);
-                g.beginFill(COLORS.GREEN20);
+                g.beginStroke(SCENER_CORE.COLORS.GREEN45a20);
+                g.beginFill(SCENER_CORE.COLORS.GREEN20);
                 g.polyShape(north, east, south, west);
                 g.endFill();
                 g.endStroke();
@@ -65,7 +65,7 @@
     function _labels() {
         var xy_point = this.ground.iso_to_xy({i:this.get_i(), j:this.get_j()});
         var txt = '(i: ' + this.get_i() + ', j: ' + this.get_j() + ')'
-        var t = new Text(txt, '20 pt serif', COLORS.WHITE);
+        var t = new Text(txt, '20 pt serif', SCENER_CORE.COLORS.WHITE);
         xy_point.move_to(t);
         var st = new Shape(t);
         xy_point.move_to(st);
@@ -73,7 +73,7 @@
         //  this.addChild(st);
 
         var xy = '(x: ' + xy_point.x + ', y: ' + xy_point.y + ')';
-        t = new Text(xy, '20 pt serif', COLORS.WHITE);
+        t = new Text(xy, '20 pt serif', SCENER_CORE.COLORS.WHITE);
         var st2 = new Shape(t);
         xy_point.move_to(st2);
         st2.x -= 40;
@@ -81,12 +81,12 @@
     }
 
     function _on_click(event) {
-        switch (scener_mode) {
+        switch (SCENER_CORE.mode) {
             case "terrain" :
                 event.target.removeAllChildren();
                 event.target.terrain = 'concrete';
                 event.target._draw();
-                update = true;
+                SCENER_CORE.update = true;
                 break;
 
             default:

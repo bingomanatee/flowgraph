@@ -6,10 +6,10 @@
                 height:16,
                 width:16,
                 stroke_width:1,
-                border_color:COLORS.BLACK,
-                color_1:COLORS.GREY50,
-                color_2:COLORS.GREY95,
-                color_3:COLORS.WHITE,
+                border_color:SCENER_CORE.COLORS.BLACK,
+                color_1:SCENER_CORE.COLORS.GREY50,
+                color_2:SCENER_CORE.COLORS.GREY95,
+                color_3:SCENER_CORE.COLORS.WHITE,
                 corner_1:4,
                 corner_2:2,
                 front_inset:3,
@@ -79,4 +79,30 @@
      */
 
     window.ToolbarButton = ToolbarButton;
+
+
+    var BUTTON = {
+        H:70,
+        W:70,
+        CBORDER:SCENER_CORE.COLORS.BLACK,
+        C1:SCENER_CORE.COLORS.GREY20,
+        C2:SCENER_CORE.COLORS.GREY95
+    };
+
+    function add_toolbar_button(s, place, event) {
+        var button_back_container = new ToolbarButton({width:BUTTON.W, height:BUTTON.H});
+
+        button_back_container.y = place * (15 + BUTTON.H);
+        button_back_container.make();
+
+        button_back_container.addChild(s);
+        event(button_back_container);
+
+        SCENER_CORE.toolbar_container.addChild(button_back_container);
+        SCENER_CORE.update = true;
+    }
+
+    SCENER_CORE.add_toolbar_button = add_toolbar_button
+    SCENER_CORE.sprites.BUTTON = BUTTON;
+
 })(window);

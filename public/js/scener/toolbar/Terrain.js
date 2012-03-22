@@ -1,10 +1,9 @@
 var concrete_image;
-
+(function(){
 function init_toolbar_terrain_button() {
 
     function _paint_terrain(target) {
-        scener_mode = 'terrain';
-
+        SCENER_CORE.scener_mode = 'terrain';
     }
 
     concrete_image = new Image();
@@ -20,8 +19,11 @@ function init_toolbar_terrain_button() {
 
         var s = new Shape(g);
 
-        add_toolbar_button(s, 2, _paint_terrain);
+        SCENER_CORE.add_toolbar_button(s, 2, _paint_terrain);
     }
 
 
 }
+    SCENER_CORE.on_inits.push(init_toolbar_terrain_button);
+
+})
