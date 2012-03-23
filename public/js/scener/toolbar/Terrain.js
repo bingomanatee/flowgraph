@@ -3,7 +3,7 @@ var concrete_image;
 function init_toolbar_terrain_button() {
 
     function _paint_terrain(target) {
-        SCENER_CORE.scener_mode = 'terrain';
+        SCENER_CORE.mode = 'terrain';
     }
 
     concrete_image = new Image();

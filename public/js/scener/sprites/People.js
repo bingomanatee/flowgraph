@@ -71,7 +71,7 @@
 
         (function (target) {
             target.onPress = function (e2) {
-                if (scener_mode) {
+                if (SCENER_CORE.mode) {
                     return;
                 }
 
