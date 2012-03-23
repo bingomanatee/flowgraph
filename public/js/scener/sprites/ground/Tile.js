@@ -52,7 +52,7 @@
         if (this.terrain == 'concrete'){
             g.beginBitmapFill(concrete_image);
         } else {
-            g.beginBitmapFill(grass_image);
+            g.beginBitmapFill(SCENER_CORE.images.grass);
         }
         g.polyShape(north, east, south, west);
         g.endFill();
