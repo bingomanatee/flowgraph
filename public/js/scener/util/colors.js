@@ -1,4 +1,4 @@
-SCENER_CORE.COLORS = (function () {
+ (function () {
 
     var COLORS = {
         BLACK:Graphics.getHSL(0, 0, 0, 1),
@@ -23,9 +23,10 @@ SCENER_CORE.COLORS = (function () {
             COLORS[c + v] = Graphics.getHSL(color_def.h, color_def.s, color_def.v, 1);
 
             for (var a = 0.0; a < 100; a += 20.0) {
+                COLORS[c + v + 'a' + a] = Graphics.getHSL(color_def.h, color_def.s, color_def.v, a/100.0);
             }
         }
     }
 
-    return COLORS;
+     SCENER_CORE.COLORS = COLORS;
 })();

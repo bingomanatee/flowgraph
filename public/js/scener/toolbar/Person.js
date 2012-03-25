@@ -4,16 +4,17 @@
 
         function _new_person(target) {
             target.onClick = function (evt) {
-                var p = new Person(_.shuffle(SCENER_CORE.people_sprites.getAnimations()).pop(),
+                var p = new Person(_.shuffle(SCENER_CORE.sprite_sheets.people.getAnimations()).pop(),
                     Math.round(Math.random() * 10 - Math.random() * 10),
                     Math.round(Math.random() * 10 - Math.random() * 10)
                 );
                 SCENER_CORE.people_container.addChild(p);
+                SCENER_CORE.mode = '';
                 SCENER_CORE.update = true;
             }
         }
 
-        var ani = new BitmapAnimation(SCENER_CORE.people_sprites);
+        var ani = new BitmapAnimation(SCENER_CORE.sprite_sheets.people);
         ani.gotoAndStop('female2');
         var s = new Shape(ani);
         s.x = (SCENER_CORE.sprites.BUTTON.W - ani.spriteSheet._frameWidth) * 1.5;

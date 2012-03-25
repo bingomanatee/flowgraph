@@ -1,6 +1,6 @@
 var SCENER_CORE = (function()
     {
-        var core = {update: false, mode: '', images: {}, on_inits: [], sprites: {}, mouse_update_inc: 10};
+        var core = {update: false, mode: '', images: {}, on_inits: [], sprites: {}, sprite_sheets: {}, mouse_update_inc: 10};
 
         return core;
     })();

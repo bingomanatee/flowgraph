@@ -1,17 +1,5 @@
 (function (window) {
 
-    SCENER_CORE.people_sprites = new SpriteSheet({
-        images:['/js/scener/img/people.png'],
-        frames:{width:48, height:48, count:6, regX:24, regy:24},
-        animations:{
-            template:[0, 0],
-            male1:[1, 1],
-            female1:[2, 2],
-            male2:[3, 3],
-            female2:[4, 4]
-        }
-    });
-
     function _y_sort(c) {
         return c.y * 100 + c.x / 1000;
     }
@@ -22,7 +10,7 @@
 
     }
 
-    SCENER_CORE.people_sprites = new SpriteSheet({
+    SCENER_CORE.sprite_sheets.people = new SpriteSheet({
         images:['/js/scener/img/people.png'],
         frames:{width:48, height:48, count:6, regX:24, regy:24},
         animations:{
@@ -62,7 +50,7 @@
         s2.y = 12;
         this.addChild(s2);
 
-        var ani = new BitmapAnimation(SCENER_CORE.people_sprites);
+        var ani = new BitmapAnimation(SCENER_CORE.sprite_sheets.people);
         ani.gotoAndStop(this.frame);
         var s = new Shape(ani);
         s.x = 0;

@@ -32,7 +32,7 @@
         g.setStrokeStyle(5);
         switch(this.terrain){
             case 'concrete':
-                g.beginStroke(SCENER_CORE.COLORS.GREY20a20);
+                g.beginStroke(SCENER_CORE.COLORS.GREY20a40);
                 g.beginFill(SCENER_CORE.COLORS.GREY80);
                 g.polyShape(north, east, south, west);
                 g.endFill();
@@ -42,7 +42,7 @@
 
             default:
 
-                g.beginStroke(SCENER_CORE.COLORS.GREEN45a20);
+                g.beginStroke(SCENER_CORE.COLORS.GREEN15a40);
                 g.beginFill(SCENER_CORE.COLORS.GREEN20);
                 g.polyShape(north, east, south, west);
                 g.endFill();
@@ -50,7 +50,7 @@
         }
 
         if (this.terrain == 'concrete'){
-            g.beginBitmapFill(concrete_image);
+            g.beginBitmapFill(SCENER_CORE.images.concrete);
         } else {
             g.beginBitmapFill(SCENER_CORE.images.grass);
         }
