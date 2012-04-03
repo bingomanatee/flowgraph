@@ -48,7 +48,7 @@
                 g.endFill();
                 g.endStroke();
         }
-
+/**
         if (this.terrain == 'concrete'){
             g.beginBitmapFill(SCENER_CORE.images.concrete);
         } else {
@@ -56,6 +56,7 @@
         }
         g.polyShape(north, east, south, west);
         g.endFill();
+ */
 
         this.addChild(new Shape(g));
 

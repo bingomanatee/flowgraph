@@ -4,7 +4,11 @@
     function init_toolbar_terrain_button() {
 
         function _paint_terrain(target) {
-            SCENER_CORE.mode = 'terrain';
+            target.onClick=function(evt){
+
+                console.log('setting terrain mode to terrain. ')
+                SCENER_CORE.mode = 'terrain';
+            }
         }
 
         SCENER_CORE.images.concrete = new Image();
@@ -12,13 +16,11 @@
 
         SCENER_CORE.images.concrete.onload = function () {
 
-            var g = new Graphics();
+            var b = new Bitmap('/js/scener/img/concrete.png')
 
-            g.beginBitmapFill(SCENER_CORE.images.concrete);
-            g.drawRect(8, 8, 50, 50);
-            g.endFill();
-
-            var s = new Shape(g);
+            var s = new Shape(b);
+            s.scaleX = s.scaleY = 0.25;
+            s.x = s.y = 5;
 
             SCENER_CORE.add_toolbar_button(s, 2, _paint_terrain);
         }
