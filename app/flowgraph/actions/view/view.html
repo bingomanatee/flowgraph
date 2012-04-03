@@ -2,195 +2,33 @@
 
 <p><%- project.notes %></p>
 
-<link rel="stylesheet" type="text/css" href="/css/flowgraph.css"/>
+<canvas id="flowgraph_canvas" width="600" height="500" >
 
-<table id="fg_info" style="height: 100px; overflow: hidden; display: none">
-    <tr>
-        <th style="height: 15px">Mode</th>
-        <th>New</th>
-        <th>Selected</th>
-        <th>Moving</th>
-        <th>Over Node</th>
-        <th>Over Line</th>
-    </tr>
-    <tr>
-        <td id="fg_mode">
-            ---
-        </td>
-        <td id="new_item_info">
-        </td>
-        <td id="selected_item_info">
-        </td>
-        <td id="moving_item_info">
-        </td>
-        <td id="over_item_info">
-        </td>
-        <td id="over_line_info">
-        </td>
-    </tr>
-</table>
-<button id="save_drawing" onclick="flowgraph.save()">Save Drawing</button>
-        <span id="save_done" style="border: 1px solid black; color: white; background-color: #f77c04; display: none"></span>
-<div id="canvas_frame">
-    <div id="canvas_inner">
+</canvas>
 
-        <div id="item_form" class="edit_form" style="display: none">
-            <h3>Edit Item</h3>
-            <span class="x" onclick="$('#item_form').hide()">X</span>
+<script src="/js/libs/underscore-min.js" >
 
-            <div class="item">
-                <label>ID</label>
-                <span id="item_form_item_id">...</span>
-            </div>
-            <div class="item">
-                <label>Name</label>
-                <input type="text" id="item_form_item_name"/>
-            </div>
-            <div class="item">
-                <label>Strength</label>
-                <select id="item_form_strength">
-                    <option value="minor">Minor Item</option>
-                    <option value="normal" selected="selected">Standard Item</option>
-                    <option value="major">Major Path Item</option>
-                    <option value="branch">Branch</option>
-                    <option value="start">Start</option>
-                    <option value="end">End</option>
-                </select>
-            </div>
-
-            <div class="item">
-                <button id="item_form_button" onclick="update_show_item_form()">Update Item</button>
-            </div>
-        </div>
-
-        <div id="link_form" class="edit_form" style="display: none">
-        <form onSubmit="return false" >
-        <h3>Edit Line</h3>
-            <span class="x" onclick="$('#link_form').hide()">X</span>
-
-            <div class="item">
-                <label>ID</label>
-                <span id="link_form_link_id">...</span>
-            </div>
-            <div class="item">
-                <label>Name</label>
-                <input type="text" id="link_form_link_label"/>
-            </div>
-            <div class="item">
-                <label>From (item)</label>
-                <span type="text" id="link_form_from_name"/>
-            </div>
-            <div class="item">
-                <label>To (item)</label>
-                <span type="text" id="link_form_to_name"/>
-            </div>
-            <div class="item">
-            	<label>&nbsp;</label>
-            	<input type="checkbox" id="lfr" name="lfr" value="1" /><b>Reverse</b>
-            </div>
-            <div class="item">
-                <label>Style</label>
-                <select id="link_form_style">
-                    <option value="0" selected="selected">One Way</option>
-                    <option value="10">Both Ways</option>
-                    <option value="20">One way (minor)</option>
-                    <option value="30">Both Ways (minor)</option>
-                </select>
-            </div>
-            <div class="item">
-                <button id="link_form_button" onclick="update_show_link_form()">Update Link</button>
-            </div>
-            </form>
-        </div>
-
-        <canvas width="1200" height="800" id="drawing">
-
-        </canvas>
-
-        <h1 id="qunit-header">QUnit example</h1>
-
-        <h2 id="qunit-banner"></h2>
-
-        <div id="qunit-testrunner-toolbar"></div>
-        <h2 id="qunit-userAgent"></h2>
-        <ol id="qunit-tests"></ol>
-        <div id="qunit-fixture">test markup, will be hidden</div>
-
-        <div id="sprite_log">
-            log...
-        </div>
-    </div>
-</div>
-
-</div>
-
-<br clear="all"/>
-
-<script language="JavaScript" src="/js/underscore-min.js">
 </script>
 
-<script language="JavaScript" src="/js/libs/backbone/backbone.js">
+<script src="/js/libs/easel/lib/easel.js" >
+
 </script>
 
-<script language="JavaScript" src="/js/libs/backbone/backbone.localStorage.js">
+<script src="/js/flowgraph_easel/easely_util.js" >
+
 </script>
 
-<script language="JavaScript" src="/js/flowgraph/CORE.js">
+<script src="/js/flowgraph_easel/CORE.js" >
+
 </script>
 
-<script language="JavaScript" src="/js/flowgraph/util/Point.js">
+<script src="/js/flowgraph_easel/Toolbar.js" >
+
 </script>
 
-<script language="JavaScript" src="/js/flowgraph/util/Stack.js">
-</script>
-
-<script language="JavaScript" src="/js/flowgraph/util/link_exists.js">
-</script>
-
-<script language="JavaScript" src="/js/flowgraph/util/loader.js">
-</script>
-
-<!-- script language="JavaScript" src="/js/flowgraph/util/Layer.js">
-</script -->
-
-<script language="JavaScript" src="/js/flowgraph/sprites/Image.js">
-</script>
-
-<script language="JavaScript" src="/js/flowgraph/sprites/Link.js">
-</script>
-
-<script language="JavaScript" src="/js/flowgraph/sprites/Toolbar.js">
-</script>
-
-<script language="JavaScript" src="/js/flowgraph/sprites/action_fills.js">
-</script>
-
-<script language="JavaScript" src="/js/flowgraph/sprites/Action.js">
-</script>
-
-<script language="JavaScript" src="/js/flowgraph/draw.js">
-</script>
-
-<script language="JavaScript" src="/js/flowgraph/screen/tool_bar.js">
-</script>
-
-<script language="JavaScript" src="/js/flowgraph/mouse.js">
-</script>
-
-<!-- script language="JavaScript" src="/js/flowgraph/util/test.js">
-</script -->
-
-<link rel="stylesheet" type="text/css" href="/js/libs/qunit/qunit.css"/>
-
-<script type="text/javascript" src="/js/libs/qunit/qunit.js"></script>
-
-
-<script language="JavaScript" defer="defer" src="/js/flowgraph/init.js">
-</script>
-
-<script language="JavaScript" defer="defer">
-    flowgraph.project_id = '<%= project._id %>';
-    flowgraph.load(
+<script language="JavaScript">
+    FLOWGRAPH_CORE.project_id = '<%= project._id %>';
+    FLOWGRAPH_CORE.load(
             <%- JSON.stringify(project) %>
     );
 </script>
