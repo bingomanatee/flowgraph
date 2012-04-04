@@ -23,11 +23,13 @@ function init() {
     // create stage and point it to the canvas:
     SCENER_CORE.canvas = document.getElementById("action_canvas");
     SCENER_CORE.ground_container = new Container();
+    SCENER_CORE.house_container = new Container();
     SCENER_CORE.people_container = new Container();
     SCENER_CORE.toolbar_container = new Container();
 
     SCENER_CORE.stage = new Stage(SCENER_CORE.canvas);
     SCENER_CORE.stage.addChild(SCENER_CORE.ground_container);
+    SCENER_CORE.stage.addChild(SCENER_CORE.house_container);
     SCENER_CORE.stage.addChild(SCENER_CORE.people_container);
     SCENER_CORE.stage.addChild(SCENER_CORE.toolbar_container);
 
